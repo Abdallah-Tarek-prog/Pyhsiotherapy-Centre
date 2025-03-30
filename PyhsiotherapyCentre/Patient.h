@@ -1,7 +1,6 @@
 #pragma once
 #include"LinkedQueue.h"
 #include"Treatment.h"
-#include"Info.h"
 class Patient
 {
 	enum pType;

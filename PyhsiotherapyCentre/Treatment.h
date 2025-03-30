@@ -1,15 +1,20 @@
 #pragma once
 #include"XResource.h" // it already includes UEResource
 #include"Patient.h"
+#include"Scheduler.h"
 class Treatment
 {
 private:
+	Scheduler* Sch;
 	int duration;
 	int ST; // Assignement Time
 	UEResource* AssResource; // assigned resource
 public:
-	Treatment(int Duration)
+	Treatment(int Duration,Scheduler* PTR)
 	{
+		AssResource = NULL;
+		Sch= PTR;
+		ST = -1;
 		duration = Duration;
 	}
 	virtual bool canAssign()=0;

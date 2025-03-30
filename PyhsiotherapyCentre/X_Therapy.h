@@ -4,7 +4,7 @@ class X_Therapy : public Treatment
 {
 	
 public:
-	X_Therapy(int duration):Treatment(duration)
+	X_Therapy(int duration,Scheduler* sch):Treatment(duration,sch)
 	{ }
 	bool canAssign() 
 	{ }
