@@ -19,9 +19,10 @@
 
         //insert the new node in its correct position according to its priority
         // This is insert Sorted function written in normal linked lists
+        
         void enqueue(const T& data, int priority) {
         priNode<T>* newNode = new priNode<T>(data, priority);
-
+        
         if (head == nullptr || priority > head->getPri()) {
             
         newNode->setNext(head);

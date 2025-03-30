@@ -26,9 +26,6 @@
     <ClInclude Include="E_Therapy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Info.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LinkedQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -66,6 +63,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scheduler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MpriQueue1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="M1Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="M2Queue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

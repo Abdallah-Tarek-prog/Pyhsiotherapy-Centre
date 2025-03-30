@@ -24,6 +24,11 @@ public:
 //	Treatment get_next_required();
 	void assign_late();
 
+	int TreatmentDuration()
+	{
+
+	}
+
 	int getPT() const
 	{ return PT; }
 

@@ -132,8 +132,10 @@
   <ItemGroup>
     <ClInclude Include="ArrayStack.h" />
     <ClInclude Include="E_Therapy.h" />
-    <ClInclude Include="Info.h" />
     <ClInclude Include="LinkedQueue.h" />
+    <ClInclude Include="M1Queue.h" />
+    <ClInclude Include="M2Queue.h" />
+    <ClInclude Include="MpriQueue1.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Patient.h" />
     <ClInclude Include="priNode.h" />
