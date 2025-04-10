@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="PyhsiotherapyCentre.cpp" />
+    <ClCompile Include="UIClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArrayStack.h" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Treatment.h" />
     <ClInclude Include="UEResource.h" />
     <ClInclude Include="statistics.h" />
+    <ClInclude Include="UIClass.h" />
     <ClInclude Include="U_Therapy.h" />
     <ClInclude Include="XResource.h" />
     <ClInclude Include="X_Therapy.h" />

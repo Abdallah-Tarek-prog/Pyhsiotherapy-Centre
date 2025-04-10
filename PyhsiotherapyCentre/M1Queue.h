@@ -13,7 +13,7 @@ public:
 	{
 		LinkedQueue<Patient*>::enqueue(pat);
 		// TODO : Adding some value to TL
-		int duration=
+		//int duration=
 	}
 	void dequeue(Patient* pat)
 	{

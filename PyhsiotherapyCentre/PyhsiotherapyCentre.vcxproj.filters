@@ -18,6 +18,9 @@
     <ClCompile Include="PyhsiotherapyCentre.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UIClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArrayStack.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="M2Queue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

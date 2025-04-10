@@ -55,12 +55,17 @@ private :
 	
 	Node<T>* backPtr;
 	Node<T>* frontPtr;
+	int count;
 public :
 	LinkedQueue();	
 	bool isEmpty() const ;
 	bool enqueue(const T& newEntry);
 	bool dequeue(T& frntEntry);  
 	bool peek(T& frntEntry)  const;	
+
+	int getCount() const;
+	void print() const;
+
 	~LinkedQueue();
 
 	//copy constructor
@@ -79,7 +84,7 @@ LinkedQueue<T>::LinkedQueue()
 {
 	backPtr=nullptr;
 	frontPtr=nullptr;
-
+	count = 0;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -109,6 +114,9 @@ template <typename T>
 bool LinkedQueue<T>::enqueue( const T& newEntry)
 {
 	Node<T>* newNodePtr = new Node<T>(newEntry);
+
+	count++;
+
 	// Insert the new node
 	if (isEmpty())	//special case if this is the first node to insert
 		frontPtr = newNodePtr; // The queue is empty
@@ -135,6 +143,8 @@ bool LinkedQueue<T>:: dequeue(T& frntEntry)
 {
 	if(isEmpty())
 		return false;
+
+	count--;
 
 	Node<T>* nodeToDeletePtr = frontPtr;
 	frntEntry = frontPtr->getItem();
@@ -194,11 +204,56 @@ LinkedQueue<T>::LinkedQueue(const LinkedQueue<T> & LQ)
 {	
 	frontPtr = backPtr = nullptr;
 	Node<T>* NodePtr = LQ.frontPtr;	//start at the front node in LQ
+
+	count = LQ.count;
+
 	while (NodePtr)
 	{
 		enqueue(NodePtr->getItem());	//get data of each node and enqueue it in this queue 
 		NodePtr = NodePtr->getNext();
 	}	
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+/*Function:getCount
+returns the number of elements in the queue
+
+Input: none
+Output: int
+*/
+
+template <typename T>
+int LinkedQueue<T>::getCount() const
+{
+	return count;
+} 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+/*Function:getCount
+prints all the elements in the list
+
+Input: none
+Output: none
+*/
+
+template <typename T>
+void LinkedQueue<T>::print() const
+{
+	Node<T>* NodePtr = LQ.frontPtr;
+
+
+	while (NodePtr)
+	{
+		cout << NodePtr->getItem() << ", ";
+		NodePtr = NodePtr->getNext();
+	}
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif
