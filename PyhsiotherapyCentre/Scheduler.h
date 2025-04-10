@@ -5,6 +5,7 @@
 #include "U_Therapy.h"
 #include "E_Therapy.h"
 #include "X_Therapy.h"
+#include "UIClass.h"
 #include "fstream"
 
 class Scheduler
@@ -59,6 +60,7 @@ class Scheduler
                 Patient* newPatient = new Patient(patientType, PT, VT);
 
                 int treatmentNumber;
+                inputFile >> treatmentNumber;
 
                 while (treatmentNumber--) {
                     char treatmentType;
@@ -90,8 +92,8 @@ class Scheduler
         {
         }
 
-        bool readInputFile(UIClass& uiClass) {
-            std::string fileName = uiClass.getFileName("Input");
+        bool readInputFile(UIClass& UI) {
+            std::string fileName = UI.getFileName("Input");
             std::ifstream inputFile(fileName);
 
             if (!inputFile) {
@@ -135,7 +137,7 @@ class Scheduler
         }
         
 
-      void simulateTimestep()
+      void simulateTimestep(UIClass& UI)
        {    
         MoveFromAll();
 
@@ -182,6 +184,10 @@ class Scheduler
             default:
                 break;
         }
+
+        UI.printLists(lists, timeStep);
+        UI.waitKeyPress();
+        
         }
 
         void RandomWaiting(Patient* p, bool fromTreatment = false) {

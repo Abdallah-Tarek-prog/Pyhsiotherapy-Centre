@@ -9,6 +9,7 @@ public:
 	UIClass();
 
 	std::string getFileName(const std::string& type) const;
-	void printLists(Lists& lists) const;
+	void printLists(Lists& lists, int timestep) const;
+	void waitKeyPress() const;
 };
 
