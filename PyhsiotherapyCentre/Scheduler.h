@@ -182,7 +182,7 @@ class Scheduler
                 break;
             case 6:
                 lists.X_WaitingList.dequeue(next);
-                lists.finishList.push(next);
+                lists.finishedList.push(next);
                 break;
             case 7:
                 int randPatient = rand() % lists.earlyList.getCount();
