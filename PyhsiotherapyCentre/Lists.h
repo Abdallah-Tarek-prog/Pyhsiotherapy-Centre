@@ -20,7 +20,7 @@ struct Lists {
 
     M1Queue U_WaitingList;
     M1Queue E_WaitingList;
-    M2Queue<Patient*> X_WaitingList;
+    M2Queue X_WaitingList;
 
     LinkedQueue<UEResource*> U_Deivces;
     LinkedQueue<UEResource*> E_Deivces;
