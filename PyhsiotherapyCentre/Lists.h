@@ -26,5 +26,5 @@ struct Lists {
     LinkedQueue<UEResource*> E_Deivces;
     LinkedQueue<XResource*> X_Rooms;
 
-    priQueue<Treatment*> inTreatmentList;
+    priQueue<Patient*> inTreatmentList;
 };

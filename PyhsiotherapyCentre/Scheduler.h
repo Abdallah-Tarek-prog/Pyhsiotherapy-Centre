@@ -152,13 +152,13 @@ class Scheduler
         switch (X / 10) {
             case 0:
                 int _pri;
-                earlyList.dequeue(next, _pri);
+                lists.earlyList.dequeue(next, _pri);
                 RandomWaiting()->enqueue(next);
                 break;
             case 1:
                 
                 int _pri;
-                lateList.dequeue(next, _pri);
+                lists.lateList.dequeue(next, _pri);
                 int penalty = (next->getVT() - next->getPT()) / 2;
                 RandomWaiting()->InsertSorted(next, next->getPT() + penalty);
                 break;
@@ -166,27 +166,27 @@ class Scheduler
                 
             case 3:
                 RandomWaiting()->dequeue(next);
-                inTreatementList.enqueue(next, 0);
+                lists.inTreatmentList.enqueue(next, 0);
                 RandomWaiting()->dequeue(next);
-                inTreatementList.enqueue(next, 0);
+                lists.inTreatmentList.enqueue(next, 0);
                 break;
             case 4:
                 int _pri;
-                inTreatementList.dequeue(next,_pri);
+                lists.inTreatmentList.dequeue(next,_pri);
                 RandomWaiting()->enqueue(next);
                 break;
             case 5:
                 int _pri;
-                inTreatementList.dequeue(next, _pri);
-                finishList.push(next);
+                lists.inTreatmentList.dequeue(next, _pri);
+                lists.finishedList.push(next);
                 break;
             case 6:
-                X_WaitingList.dequeue(next);
-                finishList.push(next);
+                lists.X_WaitingList.dequeue(next);
+                lists.finishList.push(next);
                 break;
             case 7:
-                int randPatient = rand() % earlyList.getCount();
-                earlyList.Reschedule(randPatient);
+                int randPatient = rand() % lists.earlyList.getCount();
+                lists.earlyList.Reschedule(randPatient);
                 break;
             default:
                 break;
@@ -199,7 +199,7 @@ class Scheduler
 
         M1Queue * RandomWaiting() {
             int randomNumber = (rand() % 101);
-            M1Queue * allLists[3] = {&E_WaitingList, &U_WaitingList, &X_WaitingList};
+            M1Queue * allLists[3] = {&lists.E_WaitingList, &lists.U_WaitingList, &lists.X_WaitingList};
             return allLists[min(randomNumber/33, 2)];
         }
 
