@@ -134,6 +134,7 @@
     <ClInclude Include="ArrayStack.h" />
     <ClInclude Include="E_Therapy.h" />
     <ClInclude Include="LinkedQueue.h" />
+    <ClInclude Include="Lists.h" />
     <ClInclude Include="M1Queue.h" />
     <ClInclude Include="M2Queue.h" />
     <ClInclude Include="MpriQueue1.h" />

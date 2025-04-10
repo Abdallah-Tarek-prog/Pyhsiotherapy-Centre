@@ -1,6 +1,7 @@
 #pragma once
 #include"LinkedQueue.h"
 #include"Treatment.h"
+
 class Patient
 {
 	enum pType;
@@ -21,7 +22,11 @@ public:
 		this->PT = PT;
 		this->VT = VT;
 	}
-//	Treatment get_next_required();
+
+	void AddTreatment(Treatment* treatment) {
+		Treatments.enqueue(treatment);
+	}
+
 	void assign_late();
 
 	int TreatmentDuration()
