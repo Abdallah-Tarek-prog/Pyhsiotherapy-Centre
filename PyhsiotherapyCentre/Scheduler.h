@@ -148,19 +148,17 @@ class Scheduler
         Patient * next;
 
         int X = rand() % 101;
+        int _pri;
 
         switch (X / 10) {
             case 0:
-                int _pri;
                 lists.earlyList.dequeue(next, _pri);
                 RandomWaiting()->enqueue(next);
                 break;
             case 1:
                 
-                int _pri;
                 lists.lateList.dequeue(next, _pri);
-                int penalty = (next->getVT() - next->getPT()) / 2;
-                RandomWaiting()->InsertSorted(next, next->getPT() + penalty);
+                //RandomWaiting()->InsertSorted(next, next->getPT() + (next->getVT() - next->getPT()) / 2);
                 break;
             case 2:
                 
@@ -171,12 +169,10 @@ class Scheduler
                 lists.inTreatmentList.enqueue(next, 0);
                 break;
             case 4:
-                int _pri;
                 lists.inTreatmentList.dequeue(next,_pri);
                 RandomWaiting()->enqueue(next);
                 break;
             case 5:
-                int _pri;
                 lists.inTreatmentList.dequeue(next, _pri);
                 lists.finishedList.push(next);
                 break;
@@ -185,8 +181,7 @@ class Scheduler
                 lists.finishedList.push(next);
                 break;
             case 7:
-                int randPatient = rand() % lists.earlyList.getCount();
-                lists.earlyList.Reschedule(randPatient);
+                lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());
                 break;
             default:
                 break;

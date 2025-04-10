@@ -243,7 +243,7 @@ Output: none
 template <typename T>
 void LinkedQueue<T>::print() const
 {
-	Node<T>* NodePtr = LQ.frontPtr;
+	Node<T>* NodePtr = frontPtr;
 
 
 	while (NodePtr)

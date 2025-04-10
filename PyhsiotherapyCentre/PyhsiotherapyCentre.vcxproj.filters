@@ -13,75 +13,81 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\DS">
+      <UniqueIdentifier>{f51bc235-877c-4044-a2d1-9ad7760b8575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resources">
+      <UniqueIdentifier>{e64e55c2-981f-46cf-bc01-c012c3b3c474}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Treatments">
+      <UniqueIdentifier>{c613dfc2-8050-4c0e-bfe9-0f033712407e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PyhsiotherapyCentre.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UIClass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ArrayStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="E_Therapy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Patient.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="priNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="priQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="QueueADT.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Treatment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UEResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="statistics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="U_Therapy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XResource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="X_Therapy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scheduler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MpriQueue1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="M1Queue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="M2Queue.h">
+    <ClInclude Include="Lists.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UIClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Lists.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ArrayStack.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="M1Queue.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="M2Queue.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="MpriQueue1.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="U_Therapy.h">
+      <Filter>Header Files\Treatments</Filter>
+    </ClInclude>
+    <ClInclude Include="E_Therapy.h">
+      <Filter>Header Files\Treatments</Filter>
+    </ClInclude>
+    <ClInclude Include="X_Therapy.h">
+      <Filter>Header Files\Treatments</Filter>
+    </ClInclude>
+    <ClInclude Include="Treatment.h">
+      <Filter>Header Files\Treatments</Filter>
+    </ClInclude>
+    <ClInclude Include="XResource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="UEResource.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="QueueADT.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="priQueue.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedQueue.h">
+      <Filter>Header Files\DS</Filter>
+    </ClInclude>
+    <ClInclude Include="priNode.h">
+      <Filter>Header Files\DS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

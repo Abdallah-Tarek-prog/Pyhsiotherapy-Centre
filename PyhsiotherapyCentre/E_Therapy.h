@@ -1,5 +1,7 @@
 #pragma once
 #include "Treatment.h"
+#include "Scheduler.h"
+
 class E_Therapy : public Treatment
 {
 public:
@@ -11,7 +13,9 @@ public:
 	{
 	}
 	void MoveToWait(Scheduler* sch) override
+
 	{
+		
 	}
 };
 

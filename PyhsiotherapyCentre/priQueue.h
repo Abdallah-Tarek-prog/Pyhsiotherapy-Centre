@@ -73,7 +73,8 @@ public:
 		priNode<T>* current = head;
 
 		while (current) {
-			cout << current->getItem() << ", ";
+			int temp ;
+			cout << current->getItem(temp) << ", ";
 			current = current->getNext();
 		}
 	}

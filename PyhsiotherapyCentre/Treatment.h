@@ -2,8 +2,9 @@
 #include <iostream>
 
 #include"XResource.h" // it already includes UEResource
-#include"Patient.h"
-#include"Scheduler.h"
+class Scheduler;
+class Patient;
+
 class Treatment
 {
 private:
@@ -45,7 +46,7 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, Treatment& t) {
 		UEResource* resource = t.GetAssResource();
 
-		out << 'P' << *(t.pPatient) << '_';
+		out << 'P' << (t.pPatient) << '_';
 		out << resource->getType()<< resource->getID();
 
 		return out;

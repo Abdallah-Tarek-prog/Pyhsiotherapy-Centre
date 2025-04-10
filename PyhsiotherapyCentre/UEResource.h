@@ -1,5 +1,6 @@
 #pragma once
 #include<cctype> // for toupper()
+#include <iostream>
 class UEResource
 {
 	enum Type;
@@ -26,7 +27,7 @@ public:
 		return out;
 	}
 };
-int UEResource::IDGenerator = 0; 
+int UEResource::IDGenerator = 0;
 // this is initialization of the 
 // static variable
 
