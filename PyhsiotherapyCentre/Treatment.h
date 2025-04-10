@@ -1,24 +1,26 @@
 #pragma once
+#include <iostream>
+
 #include"XResource.h" // it already includes UEResource
 #include"Patient.h"
 #include"Scheduler.h"
 class Treatment
 {
 private:
-	Scheduler* Sch;
+	Patient* pPatient;
 	int duration;
 	int ST; // Assignement Time
 	UEResource* AssResource; // assigned resource
 public:
-	Treatment(int Duration,Scheduler* PTR)
+	Treatment(int Duration,Patient* PTR)
 	{
 		AssResource = NULL;
-		Sch= PTR;
+		pPatient = PTR;
 		ST = -1;
 		duration = Duration;
 	}
 	virtual bool canAssign()=0;
-	virtual void MoveToWait(Patient* patient)=0;
+	virtual void MoveToWait(Scheduler* PTR)=0;
 	void setST(int time)
 	{
 		ST = time;
@@ -38,6 +40,15 @@ public:
 	void setAssResource(UEResource* res)
 	{
 		AssResource = res;
+	}
+
+	friend std::ostream& operator<<(std::ostream& out, Treatment& t) {
+		UEResource* resource = t.GetAssResource();
+
+		out << 'P' << *(t.pPatient) << '_';
+		out << resource->getType()<< resource->getID();
+
+		return out;
 	}
 };
 

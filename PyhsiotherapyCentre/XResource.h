@@ -23,5 +23,11 @@ public:
 	{
 		count--;
 	}
+
+	friend std::ostream& operator<<(std::ostream& out, XResource& r) {
+		out << 'R' << r.ID << '[' << r.count << ", " << r.capacity << ']';
+
+		return out;
+	}
 };
 

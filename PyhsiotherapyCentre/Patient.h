@@ -41,5 +41,10 @@ public:
 	void setVT(int vt)
 	{ VT = vt; }
 
+	friend std::ostream& operator<<(std::ostream& out, Patient& p) {
+		out << p.ID;
+
+		return out;
+	}
 };
  int Patient::IDGenerator=0;

@@ -4,13 +4,13 @@ class E_Therapy : public Treatment
 {
 public:
 public:
-	E_Therapy(int duration, Scheduler* sch) :Treatment(duration, sch)
+	E_Therapy(int duration, Patient* sch) :Treatment(duration, sch)
 	{
 	}
 	bool canAssign()
 	{
 	}
-	void MoveToWait(Patient* patient)
+	void MoveToWait(Scheduler* sch) override
 	{
 	}
 };

@@ -4,11 +4,11 @@ class X_Therapy : public Treatment
 {
 	
 public:
-	X_Therapy(int duration,Scheduler* sch):Treatment(duration,sch)
+	X_Therapy(int duration,Patient* pPatient):Treatment(duration,pPatient)
 	{ }
 	bool canAssign() 
 	{ }
-	void MoveToWait(Patient* patient) 
+	void MoveToWait(Scheduler* sch)  override
 	{ }
 };
 
