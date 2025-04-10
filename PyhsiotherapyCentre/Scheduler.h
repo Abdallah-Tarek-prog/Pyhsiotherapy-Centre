@@ -1,21 +1,85 @@
 #pragma once
-#include "LinkedQueue.h"
-#include "priQueue.h"
-#include "MpriQueue1.h"
-#include "M1Queue.h"
+#include "Lists.h"
 #include "Patient.h"
+#include "UIClass.h"
+#include "U_Therapy.h"
+#include "E_Therapy.h"
+#include "X_Therapy.h"
+#include "fstream"
 
 class Scheduler
 {
     private:
         int timeStep;
-        LinkedQueue<Patient*> allPatientsList;
-        MpriQueue1<Patient*> earlyList;
-        //M1Queue<Patient*> U_WaitingList;
-        //M1Queue<Patient*> E_WaitingList;
-        //M2Queue<Patient*> X_WaitingList;
-        priQueue<Patient*> lateList;
+        Lists lists;
+
+        int PCancel;
+        int PResc;
+
+
+
+        // helper functions for input reading
         
+        void populateResouceLists(std::ifstream& inputFile) {
+            int EDevices, UDevices, XDevices;
+
+            inputFile >> EDevices >> UDevices >> XDevices;
+
+            while (EDevices--) {
+                UEResource* newResource = new UEResource('E');
+                lists.E_Deivces.enqueue(newResource);
+            }
+
+            while (UDevices--) {
+                UEResource* newResource = new UEResource('U');
+                lists.U_Deivces.enqueue(newResource);
+            }
+
+            while (XDevices--) {
+                int capacity;
+                inputFile >> capacity;
+                XResource* newResource = new XResource('R', capacity);
+
+                lists.X_Rooms.enqueue(newResource);
+            }
+        }
+
+        void populatePatientList(std::ifstream& inputFile) {
+            int patientNumber;
+
+            inputFile >> patientNumber;
+
+            while (patientNumber--) {
+                char patientType;
+                inputFile >> patientType;
+
+                int PT, VT;
+                inputFile >> PT >> VT;
+
+                Patient* newPatient = new Patient(patientType, PT, VT);
+
+                int treatmentNumber;
+
+                while (treatmentNumber--) {
+                    char treatmentType;
+                    int treatmentDuration;
+                    
+                    inputFile >> treatmentType >> treatmentDuration;
+
+                    switch (treatmentType)
+                    {
+                    case 'U':
+                        newPatient->AddTreatment(new U_Therapy(treatmentDuration, newPatient));
+                    case 'E':
+                        newPatient->AddTreatment(new E_Therapy(treatmentDuration, newPatient));
+                    case 'X':
+                        newPatient->AddTreatment(new X_Therapy(treatmentDuration, newPatient));
+                    }
+                }
+            }
+        }
+
+
     public:
         Scheduler()
         {
@@ -26,13 +90,33 @@ class Scheduler
         {
         }
 
+        bool readInputFile(UIClass& uiClass) {
+            std::string fileName = uiClass.getFileName("Input");
+            std::ifstream inputFile(fileName);
+
+            if (!inputFile) {
+                std::cout << fileName << " could not be opened.\n";
+                return false;
+            }
+
+            populateResouceLists(inputFile);
+
+            inputFile >> PCancel >> PResc;
+
+            populatePatientList(inputFile);
+
+            inputFile.close();
+
+            return true;
+        }
+
         void MoveFromAll(){
             Patient* topPatient;
             
-            while(allPatientsList.peek(topPatient)){
-                if(topPatient->getVT() == timeStep){
+            while(lists.allPatientsList.peek(topPatient)) {
+                if (topPatient->getVT() == timeStep) {
                     Patient* temp;
-                    allPatientsList.dequeue(temp);
+                    lists.allPatientsList.dequeue(temp);
                     
                     if(topPatient->getVT() == topPatient->getPT()){
                         RandomWaiting(topPatient);
@@ -42,9 +126,9 @@ class Scheduler
 
                     if(topPatient->getVT() > topPatient->getPT()){
                         int penalty = (topPatient->getVT() - topPatient->getPT()) / 2;
-                        lateList.enqueue(topPatient, topPatient->getVT() + penalty);
+                        lists.lateList.enqueue(topPatient, topPatient->getVT() + penalty);
                     }else{
-                        earlyList.enqueue(topPatient, topPatient->getPT());
+                        lists.earlyList.enqueue(topPatient, topPatient->getPT());
                     }
                 }
             }
@@ -61,11 +145,11 @@ class Scheduler
 
         switch (X / 10) {
             case 0:
-                earlyList.dequeue(next);
+                lists.earlyList.dequeue(next);
                 RandomWaiting(next);
                 break;
             case 1:
-                lateList.dequeue(next);
+                lists.lateList.dequeue(next);
                 RandomWaiting(next);
                 break;
             case 2:
