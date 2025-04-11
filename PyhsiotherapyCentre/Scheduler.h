@@ -78,6 +78,8 @@ class Scheduler
                         newPatient->AddTreatment(new X_Therapy(treatmentDuration));
                     }
                 }
+
+                lists.allPatientsList.enqueue(newPatient);
             }
         }
 
@@ -136,8 +138,7 @@ class Scheduler
                         lists.earlyList.enqueue(topPatient, -(topPatient->getPT()));
                     }
                 }
-                else 
-                {
+                else {
                     break;
                 }
             }
@@ -147,52 +148,52 @@ class Scheduler
       void simulateTimestep(UIClass& UI)
        {
         
-        MoveFromAll();
-        timeStep += 1;
-        Patient * next;
+          MoveFromAll();
+          timeStep += 1;
+          Patient* next;
 
-        int X = rand() % 101;
-        int _pri;
+          int X = rand() % 101;
+          int _pri;
 
-        switch (X / 10) {
-            case 0:
-                if(lists.earlyList.dequeue(next, _pri))
-                RandomWaiting()->enqueue(next);
-                break;
-            case 1:
-                
-                if(lists.lateList.dequeue(next, _pri))
-                RandomWaiting()->InsertSorted(next, -(next->getPT() + (next->getVT() - next->getPT()) / 2));
-                break;
-            case 2:
-                
-            case 3:
-                if(RandomWaiting()->dequeue(next))
-                {
-                lists.inTreatmentList.enqueue(next, 0);
-                if(RandomWaiting()->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
-                }
-                break;
-            case 4:
-                if(lists.inTreatmentList.dequeue(next,_pri)) RandomWaiting()->enqueue(next);
-                break;
-            case 5:
-                if(lists.inTreatmentList.dequeue(next, _pri)) lists.finishedList.push(next);
-                break;
-            case 6:
-                // lists.X_WaitingList.Cancel();
-                lists.finishedList.push(next);
-                break;
-            case 7:
-                if (!lists.earlyList.getCount()) break;
-                lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());
-                break;
-            default:
-                break;
-        }
-        
-        UI.printLists(lists, timeStep);
-        UI.waitKeyPress();
+          switch (X / 10) {
+          case 0:
+              if (lists.earlyList.dequeue(next, _pri))
+                  RandomWaiting()->enqueue(next);
+              break;
+          case 1:
+
+              if (lists.lateList.dequeue(next, _pri))
+                  RandomWaiting()->InsertSorted(next, -(next->getPT() + (next->getVT() - next->getPT()) / 2));
+              break;
+          case 2:
+
+          case 3:
+              if (RandomWaiting()->dequeue(next))
+              {
+                  lists.inTreatmentList.enqueue(next, 0);
+                  if (RandomWaiting()->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
+              }
+              break;
+          case 4:
+              if (lists.inTreatmentList.dequeue(next, _pri)) RandomWaiting()->enqueue(next);
+              break;
+          case 5:
+              if (lists.inTreatmentList.dequeue(next, _pri)) lists.finishedList.push(next);
+              break;
+          case 6:
+              // lists.X_WaitingList.Cancel();
+              lists.finishedList.push(next);
+              break;
+          case 7:
+              if (!lists.earlyList.getCount()) break;
+              lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());
+              break;
+          default:
+              break;
+          }
+
+          UI.printLists(lists, timeStep);
+          UI.waitKeyPress();
         
         }
 
