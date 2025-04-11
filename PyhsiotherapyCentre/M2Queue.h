@@ -12,7 +12,7 @@ class M2Queue : public M1Queue
 		if (index == 0)
 		{
 			Delinked = frontPtr->getItem();
-			frontPtr->setNext(frontPtr->getNext());
+			frontPtr=frontPtr->getNext();
 			return;
 		}
 		Node<Patient*>* current = frontPtr->getNext();
