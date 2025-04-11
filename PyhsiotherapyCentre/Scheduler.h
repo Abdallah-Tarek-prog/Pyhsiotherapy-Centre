@@ -131,9 +131,9 @@ class Scheduler
 
                     if(topPatient->getVT() > topPatient->getPT()){
                         int penalty = (topPatient->getVT() - topPatient->getPT()) / 2;
-                        lists.lateList.enqueue(topPatient, topPatient->getVT() + penalty);
+                        lists.lateList.enqueue(topPatient, -(topPatient->getVT() + penalty));
                     }else{
-                        lists.earlyList.enqueue(topPatient, topPatient->getPT());
+                        lists.earlyList.enqueue(topPatient, -(topPatient->getPT()));
                     }
                 }
             }
@@ -157,7 +157,7 @@ class Scheduler
             case 1:
                 
                 lists.lateList.dequeue(next, _pri);
-                RandomWaiting()->InsertSorted(next, next->getPT() + (next->getVT() - next->getPT()) / 2);
+                RandomWaiting()->InsertSorted(next, next->getPT() + (next->getVT() - next->getPT()) / -2);
                 break;
             case 2:
                 
@@ -176,7 +176,7 @@ class Scheduler
                 lists.finishedList.push(next);
                 break;
             case 6:
-                lists.X_WaitingList.dequeue(next);
+                // lists.X_WaitingList.Cancel();
                 lists.finishedList.push(next);
                 break;
             case 7:
@@ -193,8 +193,17 @@ class Scheduler
 
         M1Queue * RandomWaiting() {
             int randomNumber = (rand() % 101);
-            M1Queue * allLists[3] = {&lists.E_WaitingList, &lists.U_WaitingList, &lists.X_WaitingList};
-            return allLists[min(randomNumber/33, 2)];
+            switch(min(randomNumber/33, 2)){
+                case 0:
+                    return &lists.E_WaitingList;
+                    break;
+                case 1:
+                    return &lists.U_WaitingList;
+                    break;
+                case 2:
+                    return &lists.X_WaitingList;
+                    break;
+            }
         }
 
 };
