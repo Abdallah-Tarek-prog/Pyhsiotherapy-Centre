@@ -9,6 +9,7 @@ private:
 public:
 	XResource(char Type,int capacity) :UEResource(Type)
 	{
+		count = 0;
 		this->capacity = capacity;
 	}
 	int getCapacity()
@@ -24,7 +25,7 @@ public:
 		count--;
 	}
 
-	friend std::ostream& operator<<(std::ostream& out, XResource& r) {
+	friend std::ostream& operator<<(std::ostream& out,const XResource& r) {
 		out << 'R' << r.ID << '[' << r.count << ", " << r.capacity << ']';
 
 		return out;

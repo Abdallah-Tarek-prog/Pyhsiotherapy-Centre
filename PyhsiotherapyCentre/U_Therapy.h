@@ -8,8 +8,10 @@ public:
 	U_Therapy(int duration, Patient* pPatient) :Treatment(duration, pPatient)
 	{
 	}
+	// No Representation for these two is required
 	bool canAssign()
 	{
+		return true; 
 	}
 	void MoveToWait(Scheduler* sch) override
 	{

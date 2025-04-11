@@ -8,8 +8,11 @@ class X_Therapy : public Treatment
 public:
 	X_Therapy(int duration,Patient* pPatient):Treatment(duration,pPatient)
 	{ }
-	bool canAssign() 
-	{ }
+	// No Representation for these two is required in Phase 1
+	bool canAssign()
+	{
+		return true; 
+	}
 	void MoveToWait(Scheduler* sch)  override
 	{ }
 };

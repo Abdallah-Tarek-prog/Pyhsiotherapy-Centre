@@ -14,14 +14,14 @@ public:
 		this->Type = char(toupper(Type));
 		ID = IDGenerator++;
 		// We can make ID randomly generated afterwards
-		// in this case IDGenerator won't express count of Resources
+		// in that case IDGenerator won't express count of Resources
 	}
 
 	int getID() const { return ID; }
 	int getType() const { return Type; }
 
 
-	friend std::ostream& operator<<(std::ostream& out, UEResource& r) {
+	friend std::ostream& operator<<(std::ostream& out,const UEResource& r) {
 		out << r.ID;
 
 		return out;

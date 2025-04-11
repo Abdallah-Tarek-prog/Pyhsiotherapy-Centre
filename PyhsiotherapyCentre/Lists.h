@@ -15,7 +15,7 @@ struct Lists {
     LinkedQueue<Patient*> allPatientsList;
     ArrayStack<Patient*> finishedList;
 
-    MpriQueue1<Patient*> earlyList;
+    MpriQueue1 earlyList;
     priQueue<Patient*> lateList;
 
     M1Queue U_WaitingList;

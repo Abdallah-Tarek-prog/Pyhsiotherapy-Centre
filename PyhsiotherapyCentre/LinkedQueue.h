@@ -51,7 +51,7 @@ using namespace std;
 template <typename T>
 class LinkedQueue:public QueueADT<T>
 {
-private :
+protected :
 	
 	Node<T>* backPtr;
 	Node<T>* frontPtr;
@@ -187,7 +187,10 @@ LinkedQueue<T>::~LinkedQueue()
 {
 	//Free all nodes in the queue
 	T temp;
-	while(dequeue(temp));
+	while (dequeue(temp))
+	{
+		count--;
+	};
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -204,8 +207,7 @@ LinkedQueue<T>::LinkedQueue(const LinkedQueue<T> & LQ)
 {	
 	frontPtr = backPtr = nullptr;
 	Node<T>* NodePtr = LQ.frontPtr;	//start at the front node in LQ
-
-	count = LQ.count;
+	count = 0;
 
 	while (NodePtr)
 	{

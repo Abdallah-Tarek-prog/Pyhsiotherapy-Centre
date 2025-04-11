@@ -4,16 +4,18 @@
 
 class Patient
 {
-	enum pType;
+	
 private:
 	int ID;
 	int PT;
 	int VT;
 	static int IDGenerator;
 	LinkedQueue<Treatment*> Treatments;
+	Treatment* CurrTreatment;
 	enum pState { Early, Late, Idle, Wait, Finished };
  	pState state;
 	char PType; // R for recovering  ,   N for Normal
+	
 public:
 	Patient(char PType, int PT, int VT)
 	{
@@ -21,18 +23,22 @@ public:
 		this->PType = toupper(PType);
 		this->PT = PT;
 		this->VT = VT;
+		
 	}
 
 	void AddTreatment(Treatment* treatment) {
 		Treatments.enqueue(treatment);
 	}
 
-	void assign_late();
-
-	int TreatmentDuration()
+	void assign_late()
 	{
 
 	}
+
+	/*int TreatmentDuration() // Needed for phase 2
+	{
+		return CurrTreatment->GetDuration();//  logic like that
+	}*/
 
 	int getPT() const
 	{ return PT; }

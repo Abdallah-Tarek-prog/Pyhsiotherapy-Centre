@@ -7,6 +7,7 @@
 template <typename T>
 class priQueue
 {
+protected:
 	priNode<T>* head;
 	int count;
 public:
@@ -17,7 +18,10 @@ public:
 	~priQueue() {
 		T tmp;
 		int p;
-		while (dequeue(tmp, p));
+		while (dequeue(tmp, p))
+		{
+			count--;
+		}
 	}
 
 	//insert the new node in its correct position according to its priority

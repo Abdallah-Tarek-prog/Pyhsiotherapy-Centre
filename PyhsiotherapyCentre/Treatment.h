@@ -43,10 +43,10 @@ public:
 		AssResource = res;
 	}
 
-	friend std::ostream& operator<<(std::ostream& out, Treatment& t) {
+	friend std::ostream& operator<<(std::ostream& out,const  Treatment& t) {
 		UEResource* resource = t.GetAssResource();
 
-		out << 'P' << (t.pPatient) << '_';
+		out << 'P' << *(t.pPatient) << '_';
 		out << resource->getType()<< resource->getID();
 
 		return out;
