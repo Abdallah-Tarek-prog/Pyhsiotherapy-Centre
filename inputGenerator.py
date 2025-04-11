@@ -48,5 +48,7 @@ Patients = []
 for i in range(PatientsCount):
     p = Patient(
         recovering=random.randint(0,1),
-        PT= random.randint()
+        PT= random.randint(1, 100),
+        VT= random.randint(1, 100),
     )
+    
