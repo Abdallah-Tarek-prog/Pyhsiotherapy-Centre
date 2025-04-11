@@ -151,7 +151,7 @@ class Scheduler
           MoveFromAll();
           timeStep += 1;
           Patient* next;
-
+          M1Queue* rlist;
           int X = rand() % 101;
           int _pri;
 
@@ -168,7 +168,7 @@ class Scheduler
           case 2:
 
           case 3:
-                M1Queue* rlist = RandomWaiting();
+                rlist = RandomWaiting();
                 if (rlist->dequeue(next))
                 lists.inTreatmentList.enqueue(next, 0);
                 if (rlist->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
