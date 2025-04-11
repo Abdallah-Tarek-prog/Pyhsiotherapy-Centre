@@ -6,7 +6,7 @@ class E_Therapy : public Treatment
 {
 public:
 public:
-	E_Therapy(int duration, Patient* sch) :Treatment(duration, sch)
+	E_Therapy(int duration) :Treatment(duration)
 	{
 	}
 	// No Representation for these two is required in Phase 1

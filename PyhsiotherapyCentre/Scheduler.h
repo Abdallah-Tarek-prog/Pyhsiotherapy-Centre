@@ -19,8 +19,6 @@ class Scheduler
         int PCancel;
         int PResc;
 
-
-
         // helper functions for input reading
         
         void populateResouceLists(std::ifstream& inputFile) {
@@ -73,11 +71,11 @@ class Scheduler
                     switch (treatmentType)
                     {
                     case 'U':
-                        newPatient->AddTreatment(new U_Therapy(treatmentDuration, newPatient));
+                        newPatient->AddTreatment(new U_Therapy(treatmentDuration));
                     case 'E':
-                        newPatient->AddTreatment(new E_Therapy(treatmentDuration, newPatient));
+                        newPatient->AddTreatment(new E_Therapy(treatmentDuration));
                     case 'X':
-                        newPatient->AddTreatment(new X_Therapy(treatmentDuration, newPatient));
+                        newPatient->AddTreatment(new X_Therapy(treatmentDuration));
                     }
                 }
             }

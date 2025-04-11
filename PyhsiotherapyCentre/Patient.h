@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include"LinkedQueue.h"
 #include"Treatment.h"
 
@@ -27,7 +28,20 @@ public:
 	}
 
 	void AddTreatment(Treatment* treatment) {
+		if (Treatments.isEmpty())
+			CurrTreatment = treatment;
+
 		Treatments.enqueue(treatment);
+	}
+
+	void RemoveTreatment() {
+		if (Treatments.isEmpty())
+			return;
+
+		Treatment* temp;
+		Treatments.dequeue(temp);
+
+		Treatments.peek(CurrTreatment);
 	}
 
 	void assign_late()
@@ -51,6 +65,17 @@ public:
 
 	void setVT(int vt)
 	{ VT = vt; }
+
+	void printWithTreatment() {
+		UEResource* resource = CurrTreatment->GetAssResource();
+
+		std::cout << 'P' << ID << '_';
+		std::cout << resource->getType() << resource->getID();
+	}
+
+	void printWithVT() {
+		std::cout << 'P' << ID << '_' << VT;
+	}
 
 	friend std::ostream& operator<<(std::ostream& out, Patient& p) {
 		out << p.ID;

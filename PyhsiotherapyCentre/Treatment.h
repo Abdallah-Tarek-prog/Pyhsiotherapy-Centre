@@ -8,15 +8,13 @@ class Patient;
 class Treatment
 {
 private:
-	Patient* pPatient;
 	int duration;
 	int ST; // Assignement Time
 	UEResource* AssResource; // assigned resource
 public:
-	Treatment(int Duration,Patient* PTR)
+	Treatment(int Duration)
 	{
 		AssResource = NULL;
-		pPatient = PTR;
 		ST = -1;
 		duration = Duration;
 	}
@@ -41,15 +39,6 @@ public:
 	void setAssResource(UEResource* res)
 	{
 		AssResource = res;
-	}
-
-	friend std::ostream& operator<<(std::ostream& out,const  Treatment& t) {
-		UEResource* resource = t.GetAssResource();
-
-		out << 'P' << *(t.pPatient) << '_';
-		out << resource->getType()<< resource->getID();
-
-		return out;
 	}
 };
 

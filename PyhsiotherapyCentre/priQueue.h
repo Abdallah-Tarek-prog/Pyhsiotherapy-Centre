@@ -1,6 +1,10 @@
 #pragma once
 #include "priNode.h"
 
+template <typename T>
+void defaultPriFormatter(T item) {
+	std::cout << item;
+}
 
 //This class impelements the priority queue as a sorted list (Linked List)
 //The item with highest priority is at the front of the queue
@@ -73,12 +77,16 @@ public:
 
 	int getCount() const { return count; }
 
-	void print() const {
+	void print(void (*formatter)(const T) = defaultPriFormatter, int limit = -1) const {
 		priNode<T>* current = head;
 
-		while (current) {
+		if (limit == -1) limit = count;
+
+		while (current && limit--) {
 			int temp ;
-			cout << current->getItem(temp) << ", ";
+
+			formatter(current->getItem(temp));
+			cout << ", ";
 			current = current->getNext();
 		}
 	}

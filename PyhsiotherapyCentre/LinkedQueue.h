@@ -47,6 +47,10 @@ Single Node Case:
 #include <iostream>
 using namespace std;
 
+template <typename T>
+void defaultQueueFormatter(T item) {
+	std::cout << item;
+}
 
 template <typename T>
 class LinkedQueue:public QueueADT<T>
@@ -64,7 +68,7 @@ public :
 	bool peek(T& frntEntry)  const;	
 
 	int getCount() const;
-	void print() const;
+	void print(void (*formatter)(const T) = defaultQueueFormatter, int limit = -1) const;
 
 	~LinkedQueue();
 
@@ -242,15 +246,18 @@ Input: none
 Output: none
 */
 
+
 template <typename T>
-void LinkedQueue<T>::print() const
+void LinkedQueue<T>::print(void (*formatter)(const T), int limit) const
 {
 	Node<T>* NodePtr = frontPtr;
 
+	if (limit == -1) limit = count;
 
-	while (NodePtr)
+	while (NodePtr && limit--)
 	{
-		cout << NodePtr->getItem() << ", ";
+		formatter(NodePtr->getItem());
+		cout <<  ", ";
 		NodePtr = NodePtr->getNext();
 	}
 }

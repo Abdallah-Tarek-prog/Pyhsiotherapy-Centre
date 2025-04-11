@@ -5,7 +5,7 @@
 class U_Therapy : public Treatment
 {
 public:
-	U_Therapy(int duration, Patient* pPatient) :Treatment(duration, pPatient)
+	U_Therapy(int duration) :Treatment(duration)
 	{
 	}
 	// No Representation for these two is required
