@@ -25,6 +25,7 @@ std::string UIClass::getFileName(const std::string& type) const{
 
 	std::string fileName;
 	cin >> fileName;
+	cin.ignore();
 
 	return fileName;
 }
@@ -85,14 +86,14 @@ void UIClass::printLists(Lists& list, int timestep) const {
 	cout << '\n';
 
 
-	std::cout << "================ In-treatment List ================\n";
-	std::cout << list.inTreatmentList.getCount() << " patients: ";
+	//std::cout << "================ In-treatment List ================\n";
+	//std::cout << list.inTreatmentList.getCount() << " patients: ";
 
 
-	list.inTreatmentList.print([](Patient* p) -> void {
-		p->printWithTreatment();
-	});
-	cout << '\n';
+	//list.inTreatmentList.print([](Patient* p) -> void {
+	//	p->printWithTreatment();
+	//});
+	//cout << '\n';
 
 
 	std::cout << "--------------------------------------------------\n";
@@ -105,5 +106,5 @@ void UIClass::printLists(Lists& list, int timestep) const {
 
 void UIClass::waitKeyPress() const {
 	std::cout << "Press Enter key to progress timestep...\n";
-	std::cin.get();
+	std::cin.ignore();
 }
