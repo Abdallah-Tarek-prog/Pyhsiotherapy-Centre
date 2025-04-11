@@ -179,7 +179,7 @@ class Scheduler
               if (lists.inTreatmentList.dequeue(next, _pri)) lists.finishedList.push(next);
               break;
           case 6:
-                if (!lists.X_WaitingList.getCount()) break;
+                if (lists.X_WaitingList.isEmpty()) break;
                 lists.X_WaitingList.Cancel(rand() % lists.X_WaitingList.getCount(), next);
                 lists.finishedList.push(next);
                 break;
