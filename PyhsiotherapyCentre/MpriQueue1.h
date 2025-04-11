@@ -5,6 +5,10 @@ template <class T>
 class MpriQueue1 : public priQueue<Patient*>
 {
 public:
+	MpriQueue1() :priQueue()
+	{
+		
+	}
 	void Reschedule(int index)
 	{	
 
