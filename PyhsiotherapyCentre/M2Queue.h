@@ -26,6 +26,7 @@ class M2Queue : public M1Queue
 		}
 		becurrent->setNext(current->getNext());
 		Delinked = current->getItem();
+		count--;
 	}
 	
 };
