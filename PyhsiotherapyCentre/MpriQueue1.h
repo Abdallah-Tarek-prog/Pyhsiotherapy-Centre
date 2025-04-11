@@ -1,7 +1,7 @@
 #pragma once
 #include "priQueue.h"
 #include "Patient.h"
-template <class T>
+
 class MpriQueue1 : public priQueue<Patient*>
 {
 public:
@@ -11,21 +11,21 @@ public:
 	}
 	void Reschedule(int index)
 	{	
-
+		int _pri;
 		if (index == 0)
 		{
-			Node<Patient*>* temp=head;
+			priNode<Patient*>* temp=head;
 			head = head->getNext();
 		// Generating new PT from PT+1 up to 3*PT		// Randomly but limited 
-			int NewPT = temp->getItem()->getPT();
+			int NewPT = temp->getItem(_pri)->getPT();
 			NewPT = NewPT + 1 + rand() % (2 * NewPT);
-			enqueue(temp->getItem(), -1 * NewPT);			//Priority Negated
+			enqueue(temp->getItem(_pri), -1 * NewPT);			//Priority Negated
 			return;
 		}
 
 		int i = 1;
-		Node<Patient*>* current = head->getNext();
-		Node<Patient*>* becurrent = head;	// becurrent is short for Before current 
+		priNode<Patient*>* current = head->getNext();
+		priNode<Patient*>* becurrent = head;	// becurrent is short for Before current 
 
 		while (i != index)
 		{
@@ -35,9 +35,9 @@ public:
 		}
 		becurrent->setNext(current->getNext());	// De-link current 
 		
-		int NewPT = current->getItem()->getPT();
+		int NewPT = current->getItem(_pri)->getPT();
 		NewPT = NewPT + 1 + rand() % (2 * NewPT);
-		enqueue(current->getItem(), -1 * NewPT);			//Priority Negated
+		enqueue(current->getItem(_pri), -1 * NewPT);			//Priority Negated
 		return;
 
 
