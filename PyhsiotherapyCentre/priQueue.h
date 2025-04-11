@@ -2,6 +2,11 @@
 #include "priNode.h"
 
 template <typename T>
+void defaultPriFormatter(T* item) {
+	std::cout << *item;
+}
+
+template <typename T>
 void defaultPriFormatter(T item) {
 	std::cout << item;
 }

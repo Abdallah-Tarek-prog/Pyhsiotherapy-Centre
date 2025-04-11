@@ -48,6 +48,11 @@ Single Node Case:
 using namespace std;
 
 template <typename T>
+void defaultQueueFormatter(T* item) {
+	std::cout << *item;
+}
+
+template <typename T>
 void defaultQueueFormatter(T item) {
 	std::cout << item;
 }
