@@ -168,9 +168,10 @@ class Scheduler
           case 2:
 
           case 3:
-                if (RandomWaiting()->dequeue(next))
+                M1Queue* rlist = RandomWaiting();
+                if (rlist->dequeue(next))
                 lists.inTreatmentList.enqueue(next, 0);
-                if (RandomWaiting()->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
+                if (rlist->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
                 break;
           case 4:
               if (lists.inTreatmentList.dequeue(next, _pri)) RandomWaiting()->enqueue(next);
