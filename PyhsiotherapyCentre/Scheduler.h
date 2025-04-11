@@ -152,29 +152,28 @@ class Scheduler
 
         switch (X / 10) {
             case 0:
-                lists.earlyList.dequeue(next, _pri);
+                if(lists.earlyList.dequeue(next, _pri))
                 RandomWaiting()->enqueue(next);
                 break;
             case 1:
                 
-                lists.lateList.dequeue(next, _pri);
+                if(lists.lateList.dequeue(next, _pri))
                 RandomWaiting()->InsertSorted(next, -(next->getPT() + (next->getVT() - next->getPT()) / 2));
                 break;
             case 2:
                 
             case 3:
-                RandomWaiting()->dequeue(next);
+                if(RandomWaiting()->dequeue(next))
+                {
                 lists.inTreatmentList.enqueue(next, 0);
-                RandomWaiting()->dequeue(next);
-                lists.inTreatmentList.enqueue(next, 0);
+                if(RandomWaiting()->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
+                }
                 break;
             case 4:
-                lists.inTreatmentList.dequeue(next,_pri);
-                RandomWaiting()->enqueue(next);
+                if(lists.inTreatmentList.dequeue(next,_pri)) RandomWaiting()->enqueue(next);
                 break;
             case 5:
-                lists.inTreatmentList.dequeue(next, _pri);
-                lists.finishedList.push(next);
+                if(lists.inTreatmentList.dequeue(next, _pri)) lists.finishedList.push(next);
                 break;
             case 6:
                 // lists.X_WaitingList.Cancel();
