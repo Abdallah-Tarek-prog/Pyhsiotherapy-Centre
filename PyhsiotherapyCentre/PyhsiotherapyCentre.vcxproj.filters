@@ -90,4 +90,7 @@
       <Filter>Header Files\DS</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt" />
+  </ItemGroup>
 </Project>
