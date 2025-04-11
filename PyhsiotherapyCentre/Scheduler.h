@@ -152,7 +152,7 @@ class Scheduler
           timeStep += 1;
           Patient* next;
 
-          int X = rand() % 101;
+          int X = rand() % 80;
           int _pri;
 
           switch (X / 10) {
