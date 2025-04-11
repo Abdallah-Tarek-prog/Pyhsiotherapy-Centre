@@ -33,7 +33,7 @@ public:
 		
 		int NewPT = current->getItem()->getPT();
 		NewPT = NewPT + 1 + rand() % (2 * NewPT);
-		enqueue(temp->getItem(), -1 * NewPT);			//Priority Negated
+		enqueue(current->getItem(), -1 * NewPT);			//Priority Negated
 		return;
 
 
