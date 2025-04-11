@@ -2,7 +2,7 @@
 #include <string>
 #include <iostream>
 #include "Lists.h"
-
+#include<conio.h>
 class UIClass
 {
 private:
@@ -106,5 +106,5 @@ void UIClass::printLists(Lists& list, int timestep) const {
 
 void UIClass::waitKeyPress() const {
 	std::cout << "Press Enter key to progress timestep...\n";
-	std::cin.ignore();
+	int dummy = _getch();
 }
