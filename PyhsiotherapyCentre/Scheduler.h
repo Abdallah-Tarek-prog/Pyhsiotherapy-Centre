@@ -136,6 +136,10 @@ class Scheduler
                         lists.earlyList.enqueue(topPatient, -(topPatient->getPT()));
                     }
                 }
+                else 
+                {
+                    break;
+                }
             }
         }
         
