@@ -29,7 +29,7 @@ public:
 		int p;
 		while (dequeue(tmp, p))
 		{
-			count--;
+			
 		}
 	}
 
