@@ -161,7 +161,7 @@ class Scheduler
             case 1:
                 
                 lists.lateList.dequeue(next, _pri);
-                RandomWaiting()->InsertSorted(next, next->getPT() + (next->getVT() - next->getPT()) / -2);
+                RandomWaiting()->InsertSorted(next, -(next->getPT() + (next->getVT() - next->getPT()) / 2));
                 break;
             case 2:
                 
