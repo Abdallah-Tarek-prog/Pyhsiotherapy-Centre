@@ -168,12 +168,10 @@ class Scheduler
           case 2:
 
           case 3:
-              if (RandomWaiting()->dequeue(next))
-              {
-                  lists.inTreatmentList.enqueue(next, 0);
-                  if (RandomWaiting()->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
-              }
-              break;
+                if (RandomWaiting()->dequeue(next))
+                lists.inTreatmentList.enqueue(next, 0);
+                if (RandomWaiting()->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
+                break;
           case 4:
               if (lists.inTreatmentList.dequeue(next, _pri)) RandomWaiting()->enqueue(next);
               break;
@@ -181,9 +179,10 @@ class Scheduler
               if (lists.inTreatmentList.dequeue(next, _pri)) lists.finishedList.push(next);
               break;
           case 6:
-              // lists.X_WaitingList.Cancel();
-              lists.finishedList.push(next);
-              break;
+                if (!lists.X_WaitingList.getCount()) break;
+                lists.X_WaitingList.Cancel(rand() % lists.X_WaitingList.getCount(), next);
+                lists.finishedList.push(next);
+                break;
           case 7:
               if (!lists.earlyList.getCount()) break;
               lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());
