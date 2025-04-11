@@ -141,9 +141,10 @@ class Scheduler
         
 
       void simulateTimestep(UIClass& UI)
-       {    
-        MoveFromAll();
+       {
         
+        MoveFromAll();
+        timeStep += 1;
         Patient * next;
 
         int X = rand() % 101;
@@ -180,12 +181,13 @@ class Scheduler
                 lists.finishedList.push(next);
                 break;
             case 7:
+                if (!lists.earlyList.getCount()) break;
                 lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());
                 break;
             default:
                 break;
         }
-
+        
         UI.printLists(lists, timeStep);
         UI.waitKeyPress();
         
