@@ -18,10 +18,11 @@ public:
 			head = head->getNext();
 			// Delinking 
 			 count--;
-		// Generating new PT from PT+1 up to 3*PT		// Randomly but limited 
+			// Generating new PT from PT+1 up to 3*PT		// Randomly but limited 
 			int NewPT = temp->getItem(_pri)->getPT();
 			NewPT = NewPT + 1 + rand() % (2 * NewPT);
 			enqueue(temp->getItem(_pri), -1 * NewPT);			//Priority Negated
+			delete temp;
 			return;
 		}
 
@@ -41,6 +42,7 @@ public:
 		int NewPT = current->getItem(_pri)->getPT();
 		NewPT = NewPT + 1 + rand() % (2 * NewPT);
 		enqueue(current->getItem(_pri), -1 * NewPT);			//Priority Negated
+		delete current;
 		return;
 
 

@@ -12,8 +12,10 @@ class M2Queue : public M1Queue
 		if (index == 0)
 		{
 			Delinked = frontPtr->getItem();
+			Node<Patient*>* temp = frontPtr;
 			frontPtr=frontPtr->getNext();
 			count--;
+			delete temp;
 			return;
 		}
 		Node<Patient*>* current = frontPtr->getNext();
@@ -28,6 +30,10 @@ class M2Queue : public M1Queue
 		becurrent->setNext(current->getNext());
 		Delinked = current->getItem();
 		count--;
+		if (index == count) {
+			backPtr = becurrent;
+		}
+		delete current;
 	}
 	
 };

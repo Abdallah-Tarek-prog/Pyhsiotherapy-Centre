@@ -35,7 +35,7 @@ public:
 			enqueue(pat);
 			return;
 		}
-
+		count++;
 		// The Patient should be inserted with given priortiy and sorted with respect to PT
 		// this implementation sorts decscendingly like 9 8 7 6
 		if (frontPtr->getItem()->getPT() < priority)
@@ -57,6 +57,7 @@ public:
 		if (!current) // The element has least priority
 		{
 			becurrent ->setNext( new Node<Patient*>(pat, NULL) );
+			backPtr = becurrent->getNext();
 			return;
 		}
 
