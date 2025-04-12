@@ -91,7 +91,8 @@ public:
 			int temp ;
 
 			formatter(current->getItem(temp));
-			cout << ", ";
+			if(limit)
+				cout << ", ";
 			current = current->getNext();
 		}
 	}

@@ -67,13 +67,10 @@ public:
 	{ VT = vt; }
 
 	void printWithTreatment() {
-		if (!CurrTreatment)
+		if (!CurrTreatment || !CurrTreatment->GetAssResource())
 			return;
 
 		UEResource* resource = CurrTreatment->GetAssResource();
-
-		if (!resource)
-			return;
 
 		std::cout << 'P' << ID << '_';
 		std::cout << resource->getType() << resource->getID();

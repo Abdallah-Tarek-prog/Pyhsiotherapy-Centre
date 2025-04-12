@@ -262,6 +262,7 @@ void LinkedQueue<T>::print(void (*formatter)(const T), int limit) const
 	while (NodePtr && limit--)
 	{
 		formatter(NodePtr->getItem());
+		if (limit)
 		cout <<  ", ";
 		NodePtr = NodePtr->getNext();
 	}

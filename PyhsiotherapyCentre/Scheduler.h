@@ -71,11 +71,41 @@ class Scheduler
                     switch (treatmentType)
                     {
                     case 'U':
-                        newPatient->AddTreatment(new U_Therapy(treatmentDuration));
+                    {
+                        U_Therapy* uTreatment = new U_Therapy(treatmentDuration);
+
+                        // TEMP: PHASE 1.2 
+                        UEResource* topResource;
+                        lists.U_Deivces.peek(topResource);
+
+                        uTreatment->setAssResource(topResource);
+
+                        newPatient->AddTreatment(uTreatment);
+                    }
                     case 'E':
-                        newPatient->AddTreatment(new E_Therapy(treatmentDuration));
+                    {
+                        E_Therapy* eTreatment = new E_Therapy(treatmentDuration);
+
+                        // TEMP: PHASE 1.2 
+                        UEResource* topResource;
+                        lists.E_Deivces.peek(topResource);
+
+                        eTreatment->setAssResource(topResource);
+
+                        newPatient->AddTreatment(eTreatment);
+                    }
                     case 'X':
-                        newPatient->AddTreatment(new X_Therapy(treatmentDuration));
+                    {
+                        X_Therapy* xTreatment = new X_Therapy(treatmentDuration);
+
+                        // TEMP: PHASE 1.2 
+                        XResource* topResource;
+                        lists.X_Rooms.peek(topResource);
+
+                        xTreatment->setAssResource(topResource);
+
+                        newPatient->AddTreatment(xTreatment);
+                    }
                     }
                 }
 

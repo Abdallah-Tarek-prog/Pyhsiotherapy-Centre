@@ -18,7 +18,7 @@ public:
 	}
 
 	int getID() const { return ID; }
-	int getType() const { return Type; }
+	char getType() const { return Type; }
 
 
 	friend std::ostream& operator<<(std::ostream& out,const UEResource& r) {
