@@ -10,16 +10,25 @@ public:
 	M1Queue():LinkedQueue()
 	{ TL = 0; }
 
-	void enqueue(Patient* pat)
+	bool enqueue(Patient*& pat)
 	{
-		LinkedQueue<Patient*>::enqueue(pat);
-		TL	+= pat->TreatmentDuration();
+		if (LinkedQueue<Patient*>::enqueue(pat)) {
+			TL += pat->TreatmentDuration();
+			return true;
+		}
+
+
+		return false;
 	}
 
-	void dequeue(Patient* pat)
+	bool dequeue(Patient*& pat)
 	{
-		LinkedQueue<Patient*>::dequeue(pat);
-		TL -= pat->TreatmentDuration();
+		if (LinkedQueue<Patient*>::dequeue(pat)) {
+			TL -= pat->TreatmentDuration();
+			return true;
+		}
+
+		return false;
 	}
 
 	int calculateTL() const {
