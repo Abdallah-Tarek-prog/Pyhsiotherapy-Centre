@@ -11,12 +11,14 @@ private:
 	int duration;
 	int ST; // Assignement Time
 	UEResource* AssResource; // assigned resource
+	char Type;	// U, E ,X
 public:
-	Treatment(int Duration)
+	Treatment(int Duration,char type)
 	{
 		AssResource = NULL;
 		ST = -1;
 		duration = Duration;
+		this->Type = type;
 	}
 	virtual bool canAssign()=0;
 	virtual void MoveToWait(Scheduler* PTR)=0;
@@ -27,6 +29,10 @@ public:
 	int GetST() const
 	{
 		return ST;
+	}
+	char GetType()const
+	{
+		return Type;
 	}
 	int GetDuration() const
 	{

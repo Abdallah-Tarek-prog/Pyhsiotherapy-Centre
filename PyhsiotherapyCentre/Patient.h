@@ -44,6 +44,23 @@ public:
 		Treatments.peek(CurrTreatment);
 	}
 
+	char LastTreatmentType()
+	{
+		LinkedQueue<Treatment*>temp;
+		Treatment* treat;
+		while (Treatments.dequeue(treat))
+		{
+			temp.enqueue(treat);
+		}
+		char LastType=treat->GetType(); // Last treatment type
+
+		while (temp.dequeue(treat))
+		{
+			Treatments.enqueue(treat);
+		}
+		return LastType;
+	}
+
 	void assign_late()
 	{
 

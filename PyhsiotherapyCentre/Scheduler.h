@@ -198,22 +198,31 @@ class Scheduler
           case 2:
 
           case 3:
-                rlist = RandomWaiting();
-                if (rlist->dequeue(next))
-                lists.inTreatmentList.enqueue(next, 0);
-                if (rlist->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
-                break;
+              rlist = RandomWaiting();
+              if (rlist->dequeue(next))
+                  lists.inTreatmentList.enqueue(next, 0);
+              if (rlist->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
+              break;
           case 4:
               if (lists.inTreatmentList.dequeue(next, _pri)) RandomWaiting()->enqueue(next);
               break;
           case 5:
               if (lists.inTreatmentList.dequeue(next, _pri)) lists.finishedList.push(next);
               break;
-          case 6:
+          case 6: 
+             {
                 if (lists.X_WaitingList.isEmpty()) break;
-                lists.X_WaitingList.Cancel(rand() % lists.X_WaitingList.getCount(), next);
-                lists.finishedList.push(next);
+                int count = lists.X_WaitingList.getCount(); 
+                for (int i = 1; i <= 3 * count; i++) // Loop up to 3*count (Suggest by TA Eng.Eman)
+                {
+                    if (lists.X_WaitingList.Cancel(rand() % count, next))
+                    {
+                        lists.finishedList.push(next);
+                        break;
+                    }
+                }
                 break;
+            }
           case 7:
               if (!lists.earlyList.getCount()) break;
               lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());

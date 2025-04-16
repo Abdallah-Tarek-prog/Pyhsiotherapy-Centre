@@ -7,16 +7,19 @@ class M2Queue : public M1Queue
 
 	public:
 
-	void Cancel(int index,Patient*& Delinked)
+	bool Cancel(int index,Patient*& Delinked)
 	{
 		if (index == 0)
 		{
+			if (frontPtr->getItem()->LastTreatmentType() != 'X')
+				return false;
+
 			Delinked = frontPtr->getItem();
 			Node<Patient*>* temp = frontPtr;
 			frontPtr=frontPtr->getNext();
 			count--;
 			delete temp;
-			return;
+			return true;
 		}
 		Node<Patient*>* current = frontPtr->getNext();
 		Node<Patient*>* becurrent = frontPtr;
@@ -27,6 +30,10 @@ class M2Queue : public M1Queue
 			becurrent = becurrent->getNext();
 			i++;
 		}
+
+		if (current->getItem()->LastTreatmentType() != 'X')	//Checking before Cancelling
+			return false;
+
 		becurrent->setNext(current->getNext());
 		Delinked = current->getItem();
 		count--;
@@ -34,6 +41,7 @@ class M2Queue : public M1Queue
 			backPtr = becurrent;
 		}
 		delete current;
+		return true;
 	}
 	
 };

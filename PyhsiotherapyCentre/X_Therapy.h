@@ -6,7 +6,7 @@ class X_Therapy : public Treatment
 {
 	
 public:
-	X_Therapy(int duration):Treatment(duration)
+	X_Therapy(int duration):Treatment(duration,'X')
 	{ }
 	// No Representation for these two is required in Phase 1
 	bool canAssign()
