@@ -39,7 +39,7 @@ class Scheduler
             while (XDevices--) {
                 int capacity;
                 inputFile >> capacity;
-                XResource* newResource = new XResource('X', capacity);
+                XResource* newResource = new XResource('R', capacity);
 
                 lists.X_Rooms.enqueue(newResource);
             }
