@@ -10,23 +10,22 @@ public:
 	M1Queue():LinkedQueue()
 	{ TL = 0; }
 
-	/*
-	* NO NEED FOR THESE FUNCTION IN PHASE 1.1 BECAUSE THESE ARE FOR RECOVERING 
-		PATIENT case WHICH THE SIMULATOR DOESN'T cover 
-	
 	void enqueue(Patient* pat)
 	{
 		LinkedQueue<Patient*>::enqueue(pat);
-		// TODO : Adding some value to TL
 		TL	+= pat->TreatmentDuration();
 	}
+
 	void dequeue(Patient* pat)
 	{
 		LinkedQueue<Patient*>::dequeue(pat);
-		// TODO : Decrementing some value from TL
+		TL -= pat->TreatmentDuration();
 	}
-	
-	*/
+
+	int calculateTL() const {
+		return TL;
+	}
+
 
 	void InsertSorted(Patient* pat,int priority)
 	{

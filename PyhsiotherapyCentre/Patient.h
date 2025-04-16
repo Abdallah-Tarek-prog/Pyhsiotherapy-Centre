@@ -66,10 +66,10 @@ public:
 
 	}
 
-	/*int TreatmentDuration() // Needed for phase 2
+	int TreatmentDuration()
 	{
-		return CurrTreatment->GetDuration();//  logic like that
-	}*/
+		return CurrTreatment->GetDuration();
+	}
 
 	int getPT() const
 	{ return PT; }
