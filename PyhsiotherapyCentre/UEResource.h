@@ -3,7 +3,6 @@
 #include <iostream>
 class UEResource
 {
-	enum Type;
 protected:
 	 int ID;
 	 static int IDGenerator;
