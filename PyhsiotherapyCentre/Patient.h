@@ -5,7 +5,8 @@
 
 class Patient
 {
-	
+public:
+	enum pState { Early, Late, Idle, Wait, Finished };
 private:
 	int ID;
 	int PT;
@@ -13,7 +14,6 @@ private:
 	static int IDGenerator;
 	LinkedQueue<Treatment*> Treatments;
 	Treatment* CurrTreatment;
-	enum pState { Early, Late, Idle, Wait, Finished };
  	pState state;
 	char PType; // R for recovering  ,   N for Normal
 	
@@ -61,11 +61,10 @@ public:
 		return LastType;
 	}
 
-	void assign_late()
+	void setState(pState state)
 	{
-
+		this->state = state;
 	}
-
 	int TreatmentDuration()
 	{
 		return CurrTreatment->GetDuration();
