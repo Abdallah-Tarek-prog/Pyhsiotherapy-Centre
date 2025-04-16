@@ -63,10 +63,10 @@ public:
 	}
 
 	void print() const {
-		for (int i = 0; i < top + 1; ++i) {
+		for (int i = top; i >=0 ; --i) {
+			cout << *items[i];
 			if (i > 0)
 				cout << ", ";
-			cout << *items[i];
 		}
 	}
 
