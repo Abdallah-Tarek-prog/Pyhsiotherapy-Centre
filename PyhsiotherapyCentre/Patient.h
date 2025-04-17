@@ -86,21 +86,24 @@ public:
 	void setVT(int vt)
 	{ VT = vt; }
 
-	void printWithTreatment() {
-		if (!CurrTreatment || !CurrTreatment->GetAssResource())
-			return;
-
-		UEResource* resource = CurrTreatment->GetAssResource();
-
-		std::cout << 'P' << ID << '_';
-		std::cout << resource->getType() << resource->getID();
-	}
-
-	void printWithVT() {
-		std::cout << 'P' << ID << '_' << VT;
-	}
-
 	friend std::ostream& operator<<(std::ostream& out, Patient& p) {
+
+		if (p.state == pState::Idle) {
+		
+			out << 'P' << p.ID << '_' << p.VT;
+			return out;
+		}
+
+		if (p.state == pState::Serv) {
+			UEResource* resource = p.CurrTreatment->GetAssResource();
+
+			std::cout << 'P' << p.ID << '_';
+			std::cout << resource->getType() << resource->getID();
+		
+			return out;
+		}
+
+
 		out << p.ID;
 
 		return out;

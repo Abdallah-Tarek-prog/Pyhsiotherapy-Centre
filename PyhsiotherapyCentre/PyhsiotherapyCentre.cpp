@@ -7,7 +7,5 @@ int main()
     UIClass UI;
     
     sch.readInputFile(UI);
-
-    while(true)
-        sch.simulateTimestep(UI);
+    sch.simulate(UI);
 }

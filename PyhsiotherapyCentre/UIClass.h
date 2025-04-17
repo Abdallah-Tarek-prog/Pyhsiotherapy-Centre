@@ -36,9 +36,7 @@ void UIClass::printLists(Lists& list, int timestep) const {
 	std::cout << "================ ALL list ================\n";
 	std::cout << list.allPatientsList.getCount() << " patients remaining: ";
 
-	list.allPatientsList.print([](Patient* p){
-		p->printWithVT();
-	}, 10);
+	list.allPatientsList.print(10);
 	cout << '\n';
 
 	std::cout << "================ Waiting lists ================\n";
@@ -90,9 +88,7 @@ void UIClass::printLists(Lists& list, int timestep) const {
 	std::cout << list.inTreatmentList.getCount() << " patients: ";
 
 
-	list.inTreatmentList.print([](Patient* p) -> void {
-		p->printWithTreatment();
-	});
+	list.inTreatmentList.print();
 	cout << '\n';
 
 

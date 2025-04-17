@@ -47,15 +47,6 @@ Single Node Case:
 #include <iostream>
 using namespace std;
 
-template <typename T>
-void defaultQueueFormatter(T* item) {
-	std::cout << *item;
-}
-
-template <typename T>
-void defaultQueueFormatter(T item) {
-	std::cout << item;
-}
 
 template <typename T>
 class LinkedQueue:public QueueADT<T>
@@ -73,7 +64,7 @@ public :
 	bool peek(T& frntEntry)  const;	
 
 	int getCount() const;
-	void print(void (*formatter)(const T) = defaultQueueFormatter, int limit = -1) const;
+	void print(int limit = -1) const;
 
 	~LinkedQueue();
 
@@ -253,7 +244,7 @@ Output: none
 
 
 template <typename T>
-void LinkedQueue<T>::print(void (*formatter)(const T), int limit) const
+void LinkedQueue<T>::print(int limit) const
 {
 	Node<T>* NodePtr = frontPtr;
 
@@ -261,7 +252,7 @@ void LinkedQueue<T>::print(void (*formatter)(const T), int limit) const
 
 	while (NodePtr && limit--)
 	{
-		formatter(NodePtr->getItem());
+		cout << *(NodePtr->getItem());
 		if (limit)
 		cout <<  ", ";
 		NodePtr = NodePtr->getNext();

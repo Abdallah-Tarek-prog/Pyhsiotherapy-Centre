@@ -178,7 +178,7 @@ class Scheduler
         }
         
 
-      void simulateTimestep(UIClass& UI)
+      void simulateTimestep()
        {
         
           MoveFromAll();
@@ -259,8 +259,7 @@ class Scheduler
               break;
           }
 
-          UI.printLists(lists, timeStep);
-          UI.waitKeyPress();
+
         
         }
 
@@ -279,5 +278,13 @@ class Scheduler
             }
         }
 
+
+        void simulate(UIClass& UI) {
+            while (true) {
+                simulateTimestep();
+                UI.printLists(lists, timeStep);
+                UI.waitKeyPress();
+            }
+        }
 };
 
