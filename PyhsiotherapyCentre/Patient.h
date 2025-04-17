@@ -6,7 +6,7 @@
 class Patient
 {
 public:
-	enum pState { Early, Late, Idle, Wait, Finished };
+	enum pState { Early, Late, Idle, Wait, Serv ,Finished };
 private:
 	int ID;
 	int PT;
@@ -24,6 +24,9 @@ public:
 		this->PType = toupper(PType);
 		this->PT = PT;
 		this->VT = VT;
+		state = Idle;
+		// All patients when created are idle and they still idle in all patients list 
+		// until their VT becomes equal to the timestep
 		
 	}
 
