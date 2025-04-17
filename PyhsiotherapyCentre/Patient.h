@@ -25,6 +25,7 @@ public:
 		this->PT = PT;
 		this->VT = VT;
 		state = Idle;
+		CurrTreatment = NULL;
 		// All patients when created are idle and they still idle in all patients list 
 		// until their VT becomes equal to the timestep
 		
