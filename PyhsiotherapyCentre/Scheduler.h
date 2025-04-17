@@ -15,7 +15,7 @@ class Scheduler
     private:
         int timeStep;
         Lists lists;
-
+        int PNum; // Patients total Number
         int PCancel;
         int PResc;
 
@@ -49,6 +49,7 @@ class Scheduler
             int patientNumber;
 
             inputFile >> patientNumber;
+            PNum = patientNumber;
 
             while (patientNumber--) {
                 char patientType;
@@ -280,11 +281,17 @@ class Scheduler
 
 
         void simulate(UIClass& UI) {
-            while (true) {
+            while (lists.finishedList.getCount()!=PNum) {
                 simulateTimestep();
                 UI.printLists(lists, timeStep);
                 UI.waitKeyPress();
             }
+            cout << "----------------------------  Simulation Ended press @ to exit  ----------------------------";
+            int dummy;
+            do 
+            {  dummy = _getch(); }
+            while (dummy!='@');
+
         }
 };
 
