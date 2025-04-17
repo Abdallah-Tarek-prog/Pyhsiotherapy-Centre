@@ -182,8 +182,8 @@ class Scheduler
       void simulateTimestep()
        {
         
-          MoveFromAll();
           timeStep += 1;
+          MoveFromAll();
           Patient* next;
           M1Queue* rlist;
           int X = rand() % 101;
