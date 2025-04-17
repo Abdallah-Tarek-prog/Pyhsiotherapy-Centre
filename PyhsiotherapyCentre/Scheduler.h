@@ -57,7 +57,7 @@ class Scheduler
                 int PT, VT;
                 inputFile >> PT >> VT;
 
-                Patient* newPatient = new Patient(patientType, PT, VT);
+                Patient* newPatient = new Patient(patientType, PT, VT); // This sets Pateints idle by default
 
                 int treatmentNumber;
                 inputFile >> treatmentNumber;
@@ -157,14 +157,17 @@ class Scheduler
                     
                     if(topPatient->getVT() == topPatient->getPT()){
                         RandomWaiting()->enqueue(topPatient);
+                        topPatient->setState(Patient::Wait);
                         continue;
                     }
 
 
                     if(topPatient->getVT() > topPatient->getPT()){
                         int penalty = (topPatient->getVT() - topPatient->getPT()) / 2;
+                        topPatient->setState(Patient::Late);
                         lists.lateList.enqueue(topPatient, -(topPatient->getVT() + penalty));
                     }else{
+                        topPatient->setState(Patient::Early);
                         lists.earlyList.enqueue(topPatient, -(topPatient->getPT()));
                     }
                 }
@@ -188,26 +191,49 @@ class Scheduler
           switch (X / 10) {
           case 0:
               if (lists.earlyList.dequeue(next, _pri))
+              {
                   RandomWaiting()->enqueue(next);
+                  next->setState(Patient::Wait);
+              }
               break;
           case 1:
 
               if (lists.lateList.dequeue(next, _pri))
+              {
                   RandomWaiting()->InsertSorted(next, -(next->getPT() + (next->getVT() - next->getPT()) / 2));
+                  next->setState(Patient::Wait);
+              }
               break;
           case 2:
 
           case 3:
               rlist = RandomWaiting();
               if (rlist->dequeue(next))
+              {
                   lists.inTreatmentList.enqueue(next, 0);
-              if (rlist->dequeue(next)) lists.inTreatmentList.enqueue(next, 0);
+                  next->setState(Patient::Serv);
+              }
+              if (rlist->dequeue(next))
+              { 
+                  lists.inTreatmentList.enqueue(next, 0);
+                  next->setState(Patient::Serv);
+
+              }
               break;
           case 4:
-              if (lists.inTreatmentList.dequeue(next, _pri)) RandomWaiting()->enqueue(next);
+              if (lists.inTreatmentList.dequeue(next, _pri))
+              {
+                  RandomWaiting()->enqueue(next);
+                  next->setState(Patient::Wait);
+              }
               break;
           case 5:
-              if (lists.inTreatmentList.dequeue(next, _pri)) lists.finishedList.push(next);
+              if (lists.inTreatmentList.dequeue(next, _pri))
+              {
+                  if (lists.finishedList.push(next))                // The dequeued patient may not 
+                      next->setState(Patient::Finished);      //be added in the finish list if there is no space for him
+                      
+              }
               break;
           case 6: 
              {
@@ -218,6 +244,7 @@ class Scheduler
                     if (lists.X_WaitingList.Cancel(rand() % count, next))
                     {
                         lists.finishedList.push(next);
+                        next->setState(Patient::Finished);
                         break;
                     }
                 }
@@ -226,6 +253,7 @@ class Scheduler
           case 7:
               if (!lists.earlyList.getCount()) break;
               lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());
+              // Any one in Early list has state early and will still be early
               break;
           default:
               break;
