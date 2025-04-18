@@ -96,11 +96,11 @@ void UIClass::printLists(Lists& list, int timestep) const {
 
 	std::cout << list.finishedList.getCount() << " finished patients: ";
 	list.finishedList.print();
-	cout << '\n';
+	cout << "\n";
 
 }
 
 void UIClass::waitKeyPress() const {
-	std::cout << "Press Enter key to progress timestep...\n";
+	std::cout << "Press Enter key to progress timestep...\n\n";
 	int dummy = _getch();
 }

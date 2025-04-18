@@ -121,7 +121,7 @@ class Scheduler
         Scheduler()
         {
             srand(time(0));
-            timeStep = 0;
+            timeStep = -1;
         }
 
         ~Scheduler()
@@ -134,6 +134,7 @@ class Scheduler
 
             if (!inputFile) {
                 std::cout << fileName << " could not be opened.\n";
+                exit(1);        // non-zero value indicates error state
                 return false;
             }
 
