@@ -9,10 +9,13 @@
 #include "X_Therapy.h"
 #include "UIClass.h"
 #include "fstream"
+#include "statistics.h"
+#include<iomanip>
 
 class Scheduler
 {
     private:
+        statistics stat;
         int timeStep;
         Lists lists;
         int PNum; // Patients total Number
@@ -180,6 +183,7 @@ class Scheduler
         }
         
 
+
       void simulateTimestep()
        {
         
@@ -293,6 +297,51 @@ class Scheduler
             {  dummy = _getch(); }
             while (dummy!='@');
 
+        }
+
+        void PrintOutputFile()
+        {
+            ofstream Outfile("Output File");
+            if (!Outfile)
+            {
+                cout << "Error occured Output File wasn't created\n";
+            }
+            else
+            {
+                Patient* pat;
+                cout << "PID PType PT VT FT WT TT Cancel Resc\n";
+                while (lists.finishedList.pop(pat))
+                {
+                    cout << "P" << pat->getID() << "  "
+                        << "PType" << pat->getPType() << "  "
+                        << pat->getPT() << "  "
+                        << pat->getVT() << "  "
+                        << pat->getFT() << "   "
+                        << pat->getWT() << "   "
+                        << pat->getTT() << "   ";
+
+                    if (pat->isCancelled())
+                        cout << "T    ";
+                    else cout << "F     ";
+
+                    if (pat->isRescheduled())
+                        cout << "T    ";
+                    else cout << "F     ";
+                    cout << endl;
+                }
+                double TotalWaitingTime = stat.normalTotalWaitingTime + stat.recoveringTotalWaitingTime;
+                double TotalTreatmentTime = stat.normalTotalTreatmentTime + stat.recoveringTotalTreatmentTime;
+
+                cout << "Total number of timesteps = " << timeStep << endl // Considering timestep is the last one
+                    << "Total number of all, N, and R patients = " << PNum << " , " << stat.normalPatientNum << " , " << stat.recoveringPatientNum << endl
+                    << "Average total waiting time for all, N, and R patients = " << fixed << setprecision(2) << TotalWaitingTime / PNum << " , " << (double)stat.normalTotalWaitingTime / stat.normalPatientNum << " , " << (double)stat.recoveringTotalWaitingTime / stat.recoveringPatientNum << endl
+                    << "Average total treatment time for all, N, and R patients = " << TotalTreatmentTime / PNum << " , " << (double)stat.normalTotalTreatmentTime / stat.normalPatientNum << " , " << (double)stat.recoveringTotalTreatmentTime / stat.recoveringPatientNum << endl
+                    << "Percentage of patients of an accepted cancellation (%) = " << (double)stat.numberOfCancel * 100 / PNum << " %\n"
+                    << "Percentage of patients of an accepted rescheduling(%) = " << (double)stat.numberOfReschedule * 100 / PNum << " %\n"
+                    << "Percentage of early patients(%) = " << (double)stat.numberOfEarly * 100 / PNum<<" %\n"
+                    <<"Percentage of late patients (%) = " <<(double)(PNum-stat.numberOfEarly)*100/PNum << " %\n"
+                    <<"Average late penalty = "<<(double)(stat.totalLatePenalty)/(PNum-stat.numberOfEarly)<<"timestep(s)";
+            }
         }
 };
 

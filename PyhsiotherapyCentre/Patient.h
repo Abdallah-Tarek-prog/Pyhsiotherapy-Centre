@@ -8,9 +8,16 @@ class Patient
 public:
 	enum pState { Early, Late, Idle, Wait, Serv ,Finished };
 private:
-	int ID;
-	int PT;
-	int VT;
+	int ID;	
+	int PT;	// Appointment Time
+	int VT;	// Arrival Time
+
+	int FT;	// Finish Time
+	int WT; // Waiting Time
+	int TT; // Treatment Time	// Can't be the summation of Treatments' duration because he may cancel X-treatment
+	bool Cancelled;
+	bool Rescheduled;
+
 	static int IDGenerator;
 	LinkedQueue<Treatment*> Treatments;
 	Treatment* CurrTreatment;
@@ -77,6 +84,10 @@ public:
 	int getPT() const
 	{ return PT; }
 
+	int getID() const
+	{
+		return ID;
+	}
 	void setPT(int pt)
 	{ PT = pt; }
 
@@ -85,6 +96,28 @@ public:
 
 	void setVT(int vt)
 	{ VT = vt; }
+
+	char getPType()const
+	{
+		return PType;
+	}
+
+	int getFT() const { return FT; }
+	void setFT(int ft) { FT = ft; }
+
+	int getWT() const { return WT; }
+	void setWT(int wt) { WT = wt; }
+
+	int getTT() const { return TT; }
+	void setTT(int tt) { TT = tt; }
+
+	bool isCancelled() const { return Cancelled; }
+	void setCancelled(bool cancelled) { Cancelled = cancelled; }
+
+	bool isRescheduled() const { return Rescheduled; }
+	void setRescheduled(bool rescheduled) {
+		Rescheduled = rescheduled;
+	}
 
 	friend std::ostream& operator<<(std::ostream& out, Patient& p) {
 
