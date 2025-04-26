@@ -6,6 +6,6 @@ int main()
     Scheduler sch;
     UIClass UI;
     
-    sch.readInputFile(UI);
+    
     sch.simulate(UI);
 }

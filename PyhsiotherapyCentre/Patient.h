@@ -55,6 +55,12 @@ public:
 		Treatments.peek(CurrTreatment);
 	}
 
+	bool getCurrentTreatment(Treatment*& treatment) {
+		if (Treatments.isEmpty())
+			return false;
+		Treatments.peek(treatment);
+		return true;
+	}
 	char LastTreatmentType()
 	{
 		LinkedQueue<Treatment*>temp;

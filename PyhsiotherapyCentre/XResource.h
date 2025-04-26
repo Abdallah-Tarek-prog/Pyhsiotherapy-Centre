@@ -12,9 +12,13 @@ public:
 		count = 0;
 		this->capacity = capacity;
 	}
-	int getCapacity()
+	int getCapacity() const
 	{
 		return capacity;
+	}
+	int getCount() const
+	{
+		return count;
 	}
 	void InCount()
 	{

@@ -77,58 +77,20 @@ class Scheduler
                     case 'U':
                     {
                         U_Therapy* uTreatment = new U_Therapy(treatmentDuration);
-
-                        // TEMP: PHASE 1.2 
-                        UEResource* topResource;
-                        lists.U_Deivces.peek(topResource);
-
-                        uTreatment->setAssResource(topResource);
-
-                        newPatient->AddTreatment(uTreatment);
                     }
                     case 'E':
                     {
                         E_Therapy* eTreatment = new E_Therapy(treatmentDuration);
-
-                        // TEMP: PHASE 1.2 
-                        UEResource* topResource;
-                        lists.E_Deivces.peek(topResource);
-
-                        eTreatment->setAssResource(topResource);
-
-                        newPatient->AddTreatment(eTreatment);
                     }
                     case 'X':
                     {
                         X_Therapy* xTreatment = new X_Therapy(treatmentDuration);
-
-                        // TEMP: PHASE 1.2 
-                        XResource* topResource;
-                        lists.X_Rooms.peek(topResource);
-
-                        xTreatment->setAssResource(topResource);
-
-                        newPatient->AddTreatment(xTreatment);
                     }
                     }
                 }
 
                 lists.allPatientsList.enqueue(newPatient);
             }
-        }
-
-
-        
-        
-    public:
-        Scheduler()
-        {
-            srand(time(0));
-            timeStep = -1;
-        }
-
-        ~Scheduler()
-        {
         }
 
         bool readInputFile(UIClass& UI) {
@@ -152,6 +114,21 @@ class Scheduler
             return true;
         }
 
+        
+        
+    public:
+        Scheduler()
+        {
+            srand(time(0));
+            timeStep = -1;
+        }
+
+        ~Scheduler()
+        {
+        }
+
+        
+
         void MoveFromAll(){
             Patient* topPatient;
             
@@ -160,11 +137,14 @@ class Scheduler
                     Patient* temp;
                     lists.allPatientsList.dequeue(temp);
                     
-                    if(topPatient->getVT() == topPatient->getPT()){
-                        RandomWaiting()->enqueue(topPatient);
-                        topPatient->setState(Patient::Wait);
-                        continue;
-                    }
+
+                    // Will handle this in the simulateTimestep function
+                    //
+                    // if(topPatient->getVT() == topPatient->getPT()){
+                    //     RandomWaiting()->enqueue(topPatient);
+                    //     topPatient->setState(Patient::Wait);
+                    //     continue;
+                    // }
 
 
                     if(topPatient->getVT() > topPatient->getPT()){
@@ -183,109 +163,91 @@ class Scheduler
         }
         
 
+        void dispatch(){
+            Patient* p;
+            int _;
+            // Move patients from earlyList to the appropriate waiting list.
+            while(lists.earlyList.peek(p, _)) {
+                if(p->getPT() > timeStep)  break;
+                Treatment* t;
+                if (p->getCurrentTreatment(t)) {
+                    t->MoveToWait(this);
+                }
+                lists.earlyList.dequeue(p, _);
+            }
+            // Move patients from lateList to the appropriate waiting list.
+            int VtPenalty; // VT + Penalty
+            while(lists.lateList.peek(p, VtPenalty)) {
+                if(-VtPenalty > timeStep)  break; // Negating since priority is negative.
+                Treatment* t;
+                if (p->getCurrentTreatment(t)) {
+                    t->MoveToWait(this);    // TODO I need to be able to tell it that the patient came from the late list so that hes put in the waiting list according to PT + Penalty. For now, I will rely on the state.
+                }
+                lists.lateList.dequeue(p, _);
+            }
+        }
+
+
+        void checkout(){
+            Patient* p;
+            int pri;
+            // Move patients from inTreatmentList to the appropriate waiting list.
+            while(lists.inTreatmentList.peek(p, pri)) {
+                Treatment* t;
+                p->getCurrentTreatment(t);
+                //int leaveTime = t->GetST() + t->GetDuration(); I assume the priority is the same thing as this.
+                int leaveTime = -pri;
+                if(pri > timeStep) break;
+                UEResource * assignedResource = t->GetAssResource();
+                switch(assignedResource->getType())
+                {
+                    case 'E':
+                        lists.E_Deivces.enqueue(assignedResource);
+                        break;
+                    case 'U':
+                        lists.U_Deivces.enqueue(assignedResource);
+                        break;
+                    case 'X':
+                        XResource * xRes = (XResource * )assignedResource; // FIXME I don't like this, Eman/Marwa will hate it.
+                        if (xRes->getCount() < xRes->getCapacity())
+                        {
+                            lists.X_Rooms.enqueue(xRes);
+                        }
+                        
+                        break;
+                    default:
+                        break;
+                }
+                p->RemoveTreatment();
+                if(p->getCurrentTreatment(t)){
+                    t->MoveToWait(this);
+                }else{
+                    p->setFT(timeStep);
+                    p->setState(Patient::Finished);
+                }
+
+                lists.inTreatmentList.dequeue(p, pri);
+            }
+        }
+
+
 
       void simulateTimestep()
        {
         
-          timeStep += 1;
-          MoveFromAll();
-          Patient* next;
-          M1Queue* rlist;
-          int X = rand() % 101;
-          int _pri;
-
-          switch (X / 10) {
-          case 0:
-              if (lists.earlyList.dequeue(next, _pri))
-              {
-                  RandomWaiting()->enqueue(next);
-                  next->setState(Patient::Wait);
-              }
-              break;
-          case 1:
-
-              if (lists.lateList.dequeue(next, _pri))
-              {
-                  RandomWaiting()->InsertSorted(next, -(next->getPT() + (next->getVT() - next->getPT()) / 2));
-                  next->setState(Patient::Wait);
-              }
-              break;
-          case 2:
-
-          case 3:
-              rlist = RandomWaiting();
-              if (rlist->dequeue(next))
-              {
-                  lists.inTreatmentList.enqueue(next, 0);
-                  next->setState(Patient::Serv);
-              }
-              if (rlist->dequeue(next))
-              { 
-                  lists.inTreatmentList.enqueue(next, 0);
-                  next->setState(Patient::Serv);
-
-              }
-              break;
-          case 4:
-              if (lists.inTreatmentList.dequeue(next, _pri))
-              {
-                  RandomWaiting()->enqueue(next);
-                  next->setState(Patient::Wait);
-              }
-              break;
-          case 5:
-              if (lists.inTreatmentList.dequeue(next, _pri))
-              {
-                  if (lists.finishedList.push(next))                // The dequeued patient may not 
-                      next->setState(Patient::Finished);      //be added in the finish list if there is no space for him
-                      
-              }
-              break;
-          case 6: 
-             {
-                if (lists.X_WaitingList.isEmpty()) break;
-                int count = lists.X_WaitingList.getCount(); 
-                for (int i = 1; i <= 3 * count; i++) // Loop up to 3*count (Suggest by TA Eng.Eman)
-                {
-                    if (lists.X_WaitingList.Cancel(rand() % count, next))
-                    {
-                        lists.finishedList.push(next);
-                        next->setState(Patient::Finished);
-                        break;
-                    }
-                }
-                break;
-            }
-          case 7:
-              if (!lists.earlyList.getCount()) break;
-              lists.earlyList.Reschedule(rand() % lists.earlyList.getCount());
-              // Any one in Early list has state early and will still be early
-              break;
-          default:
-              break;
-          }
-
-
+            timeStep += 1;
+            MoveFromAll();
+            dispatch();
+            // Assign_E(); TODO Implement this 🙏
+            // Assign_U();
+            // Assign_X();
+            checkout();
         
-        }
-
-        M1Queue * RandomWaiting() {
-            int randomNumber = (rand() % 101);
-            switch(min(randomNumber/33, 2)){
-                case 0:
-                    return &lists.E_WaitingList;
-                    break;
-                case 1:
-                    return &lists.U_WaitingList;
-                    break;
-                case 2:
-                    return &lists.X_WaitingList;
-                    break;
-            }
         }
 
 
         void simulate(UIClass& UI) {
+            readInputFile(UI);
             while (lists.finishedList.getCount()!=PNum) {
                 simulateTimestep();
                 UI.printLists(lists, timeStep);
@@ -296,7 +258,8 @@ class Scheduler
             do 
             {  dummy = _getch(); }
             while (dummy!='@');
-
+            PrintOutputFile();
+            cout << "Output file is created\n";
         }
 
         void PrintOutputFile()
