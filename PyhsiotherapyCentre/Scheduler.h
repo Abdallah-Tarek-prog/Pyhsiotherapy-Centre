@@ -263,6 +263,14 @@ class Scheduler
       void Assign_E() {
           while (!lists.E_WaitingList.isEmpty() && !lists.E_Deivces.isEmpty()) {
               Patient* patient;
+              lists.E_WaitingList.peek(patient);
+
+              Treatment* t;
+              patient->getCurrentTreatment(t);
+
+              if (!t->canAssign(lists))
+                  return;
+
               lists.E_WaitingList.dequeue(patient);
 
               UEResource* resource;
@@ -278,8 +286,16 @@ class Scheduler
       }
 
       void Assign_U() {
-          while (!lists.U_WaitingList.isEmpty() && !lists.U_Deivces.isEmpty()) {
+          while (!lists.U_WaitingList.isEmpty()) {
               Patient* patient;
+              lists.U_WaitingList.peek(patient);
+
+              Treatment* t;
+              patient->getCurrentTreatment(t);
+
+              if (!t->canAssign(lists))
+                  return;
+
               lists.U_WaitingList.dequeue(patient);
 
               UEResource* resource;
@@ -295,8 +311,17 @@ class Scheduler
       }
 
       void Assign_X() {
-          while (!lists.X_WaitingList.isEmpty() && !lists.X_Rooms.isEmpty()) {
+          while (!lists.X_WaitingList.isEmpty()) {
               Patient* patient;
+              lists.X_WaitingList.peek(patient);
+                  
+              Treatment* t;
+              patient->getCurrentTreatment(t);
+
+               if (!t->canAssign(lists))
+                   return;
+
+
               lists.X_WaitingList.dequeue(patient);
 
               XResource*  resource;
