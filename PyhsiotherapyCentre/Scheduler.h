@@ -261,7 +261,7 @@ class Scheduler
       }
 
       void Assign_E() {
-          while (!lists.E_WaitingList.isEmpty() && !lists.E_Deivces.isEmpty()) {
+          while (!lists.E_WaitingList.isEmpty()) {
               Patient* patient;
               lists.E_WaitingList.peek(patient);
 
