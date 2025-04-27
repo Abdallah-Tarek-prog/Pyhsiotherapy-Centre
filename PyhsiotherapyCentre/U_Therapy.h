@@ -9,12 +9,13 @@ public:
 	{
 	}
 	// No Representation for these two is required in phase 1
-	bool canAssign()
+	bool canAssign(Lists& lists) override
 	{
-		return true; 
+		return !lists.U_Deivces.isEmpty(); 
 	}
 	void MoveToWait(Scheduler* sch) override
 	{
+		
 	}
 };
 

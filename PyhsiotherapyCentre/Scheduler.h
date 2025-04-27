@@ -11,6 +11,7 @@
 #include "fstream"
 #include "statistics.h"
 #include<iomanip>
+#include <iostream>
 
 class Scheduler
 {
@@ -77,14 +78,18 @@ class Scheduler
                     case 'U':
                     {
                         U_Therapy* uTreatment = new U_Therapy(treatmentDuration);
+                        newPatient->AddTreatment(uTreatment);
                     }
                     case 'E':
                     {
                         E_Therapy* eTreatment = new E_Therapy(treatmentDuration);
+                        newPatient->AddTreatment(eTreatment);
+
                     }
                     case 'X':
                     {
                         X_Therapy* xTreatment = new X_Therapy(treatmentDuration);
+                        newPatient->AddTreatment(xTreatment);
                     }
                     }
                 }
@@ -238,13 +243,154 @@ class Scheduler
             timeStep += 1;
             MoveFromAll();
             dispatch();
-            // Assign_E(); TODO Implement this 🙏
-            // Assign_U();
-            // Assign_X();
+            Assign_E(); 
+            Assign_U();
+            Assign_X();
             checkout();
         
-        }
+       }
 
+      void AddToWait_E(Patient* p) {
+          lists.E_WaitingList.enqueue(p);
+      }
+      void AddToWait_U(Patient* p) {
+          lists.U_WaitingList.enqueue(p);
+      }
+      void AddToWait_X(Patient* p) {
+          lists.X_WaitingList.enqueue(p);
+      }
+
+      void Assign_E() {
+          while (!lists.E_WaitingList.isEmpty() && !lists.E_Deivces.isEmpty()) {
+              Patient* patient;
+              lists.E_WaitingList.dequeue(patient);
+
+              UEResource* resource;
+              lists.E_Deivces.dequeue(resource);
+
+              Treatment* eTreatment;
+              patient->getCurrentTreatment(eTreatment);
+
+              eTreatment->setAssResource(resource);
+
+              lists.inTreatmentList.enqueue(patient, timeStep + eTreatment->GetDuration());
+          }
+      }
+
+      void Assign_U() {
+          while (!lists.U_WaitingList.isEmpty() && !lists.U_Deivces.isEmpty()) {
+              Patient* patient;
+              lists.U_WaitingList.dequeue(patient);
+
+              UEResource* resource;
+              lists.U_Deivces.dequeue(resource);
+
+              Treatment* uTreatment;
+              patient->getCurrentTreatment(uTreatment);
+
+              uTreatment->setAssResource(resource);
+
+              lists.inTreatmentList.enqueue(patient, timeStep + uTreatment->GetDuration());
+          }
+      }
+
+      void Assign_X() {
+          while (!lists.X_WaitingList.isEmpty() && !lists.X_Rooms.isEmpty()) {
+              Patient* patient;
+              lists.X_WaitingList.dequeue(patient);
+
+              XResource*  resource;
+              lists.X_Rooms.peek(resource);
+
+              resource->InCount();
+
+              if (resource->getCount() == resource->getCapacity()) {
+                  lists.X_Rooms.dequeue(resource);
+              }
+
+              Treatment* xTreatment;
+              patient->getCurrentTreatment(xTreatment);
+
+              xTreatment->setAssResource(resource);
+
+              lists.inTreatmentList.enqueue(patient, timeStep + xTreatment->GetDuration());
+          }
+      }
+
+      void HandleRP(Patient* p) {
+          if (p->getPType() != 'R')
+              return;
+
+          int minTL = INT_MAX;
+          Treatment* chosenTreatment;
+          M1Queue* chosenList ;
+
+          LinkedQueue<Treatment*> tempList;
+          Treatment* tempTreatment;
+
+          while (p->getCurrentTreatment(tempTreatment)) {
+              p->RemoveTreatment();
+
+              switch (tempTreatment->GetType())
+              {
+              case 'U':
+              {
+                  int currTL = lists.U_WaitingList.calculateTL();
+                  minTL = min(minTL, currTL);
+
+                  if (currTL == minTL)
+                  {
+                      chosenList = &(lists.U_WaitingList);
+                      chosenTreatment = tempTreatment;
+                  }
+
+                  break;
+              }
+
+              case 'X':
+              {
+                  int currTL = lists.X_WaitingList.calculateTL();
+                  minTL = min(minTL, currTL);
+
+                  if (currTL == minTL)
+                  {
+                      chosenList = &(lists.X_WaitingList);
+                      chosenTreatment = tempTreatment;
+                  }
+
+                  break;
+              }
+              case 'E':
+              {
+                  int currTL = lists.E_WaitingList.calculateTL();
+                  minTL = min(minTL, currTL);
+
+                  if (currTL == minTL)
+                  {
+                      chosenList = &(lists.E_WaitingList);
+                      chosenTreatment = tempTreatment;
+                  }
+
+                  break;
+              }
+
+              }
+
+              tempList.enqueue(tempTreatment);
+
+          }
+
+          p->AddTreatment(chosenTreatment);
+
+          while (tempList.dequeue(tempTreatment)) {
+              if (tempTreatment == chosenTreatment)
+                  continue;
+
+              p->AddTreatment(tempTreatment);
+          }
+
+          chosenList->enqueue(p);
+      }
 
         void simulate(UIClass& UI) {
             readInputFile(UI);

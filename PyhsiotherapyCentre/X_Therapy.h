@@ -9,11 +9,13 @@ public:
 	X_Therapy(int duration):Treatment(duration,'X')
 	{ }
 	// No Representation for these two is required in Phase 1
-	bool canAssign()
+	bool canAssign(Lists& lists) override
 	{
-		return true; 
+		return !lists.X_Rooms.isEmpty(); 
 	}
 	void MoveToWait(Scheduler* sch)  override
-	{ }
+	{ 
+
+	}
 };
 

@@ -2,6 +2,8 @@
 #include <iostream>
 
 #include"XResource.h" // it already includes UEResource
+
+struct Lists;
 class Scheduler;
 class Patient;
 
@@ -20,7 +22,7 @@ public:
 		duration = Duration;
 		this->Type = type;
 	}
-	virtual bool canAssign()=0;
+	virtual bool canAssign(Lists& lists)=0;
 	virtual void MoveToWait(Scheduler* PTR)=0;
 	void setST(int time)
 	{
