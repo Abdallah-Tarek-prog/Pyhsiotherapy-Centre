@@ -82,6 +82,9 @@ public:
 	{
 		this->state = state;
 	}
+
+	pState getState() const { return state; }
+
 	int TreatmentDuration()
 	{
 		return CurrTreatment->GetDuration();

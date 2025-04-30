@@ -13,9 +13,9 @@ public:
 	{
 		return !lists.X_Rooms.isEmpty(); 
 	}
-	void MoveToWait(Scheduler* sch)  override
+	void MoveToWait(Scheduler* sch, Patient* p)  override
 	{ 
-
+		sch->AddToWait_X(p);
 	}
 };
 

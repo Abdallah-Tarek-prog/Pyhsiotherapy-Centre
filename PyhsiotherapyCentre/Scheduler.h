@@ -176,7 +176,7 @@ class Scheduler
                 if(p->getPT() > timeStep)  break;
                 Treatment* t;
                 if (p->getCurrentTreatment(t)) {
-                    t->MoveToWait(this);
+                    t->MoveToWait(this, p);
                 }
                 lists.earlyList.dequeue(p, _);
             }
@@ -186,7 +186,7 @@ class Scheduler
                 if(-VtPenalty > timeStep)  break; // Negating since priority is negative.
                 Treatment* t;
                 if (p->getCurrentTreatment(t)) {
-                    t->MoveToWait(this);    // TODO I need to be able to tell it that the patient came from the late list so that hes put in the waiting list according to PT + Penalty. For now, I will rely on the state.
+                    t->MoveToWait(this, p);    // TODO I need to be able to tell it that the patient came from the late list so that hes put in the waiting list according to PT + Penalty. For now, I will rely on the state.
                 }
                 lists.lateList.dequeue(p, _);
             }
@@ -225,7 +225,7 @@ class Scheduler
                 }
                 p->RemoveTreatment();
                 if(p->getCurrentTreatment(t)){
-                    t->MoveToWait(this);
+                    t->MoveToWait(this, p);
                 }else{
                     p->setFT(timeStep);
                     p->setState(Patient::Finished);
@@ -251,12 +251,30 @@ class Scheduler
        }
 
       void AddToWait_E(Patient* p) {
+          if (p->getState() == Patient::Late) {
+              int penalty = (p->getVT() - p->getPT()) / 2;
+              lists.E_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+              return;
+          }
+
           lists.E_WaitingList.enqueue(p);
       }
       void AddToWait_U(Patient* p) {
+          if (p->getState() == Patient::Late) {
+              int penalty = (p->getVT() - p->getPT()) / 2;
+              lists.U_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+              return;
+          }
+
           lists.U_WaitingList.enqueue(p);
       }
       void AddToWait_X(Patient* p) {
+          if (p->getState() == Patient::Late) {
+              int penalty = (p->getVT() - p->getPT()) / 2;
+              lists.X_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+              return;
+          }
+
           lists.X_WaitingList.enqueue(p);
       }
 
@@ -265,10 +283,10 @@ class Scheduler
               Patient* patient;
               lists.E_WaitingList.peek(patient);
 
-              Treatment* t;
-              patient->getCurrentTreatment(t);
+              Treatment* eTreatment;
+              patient->getCurrentTreatment(eTreatment);
 
-              if (!t->canAssign(lists))
+              if (!eTreatment->canAssign(lists))
                   return;
 
               lists.E_WaitingList.dequeue(patient);
@@ -276,12 +294,9 @@ class Scheduler
               UEResource* resource;
               lists.E_Deivces.dequeue(resource);
 
-              Treatment* eTreatment;
-              patient->getCurrentTreatment(eTreatment);
-
               eTreatment->setAssResource(resource);
 
-              lists.inTreatmentList.enqueue(patient, timeStep + eTreatment->GetDuration());
+              lists.inTreatmentList.enqueue(patient, -(timeStep + eTreatment->GetDuration()));
           }
       }
 
@@ -290,10 +305,10 @@ class Scheduler
               Patient* patient;
               lists.U_WaitingList.peek(patient);
 
-              Treatment* t;
-              patient->getCurrentTreatment(t);
+              Treatment* uTreatment;
+              patient->getCurrentTreatment(uTreatment);
 
-              if (!t->canAssign(lists))
+              if (!uTreatment->canAssign(lists))
                   return;
 
               lists.U_WaitingList.dequeue(patient);
@@ -301,12 +316,9 @@ class Scheduler
               UEResource* resource;
               lists.U_Deivces.dequeue(resource);
 
-              Treatment* uTreatment;
-              patient->getCurrentTreatment(uTreatment);
-
               uTreatment->setAssResource(resource);
 
-              lists.inTreatmentList.enqueue(patient, timeStep + uTreatment->GetDuration());
+              lists.inTreatmentList.enqueue(patient, -(timeStep + uTreatment->GetDuration()));
           }
       }
 
@@ -315,12 +327,11 @@ class Scheduler
               Patient* patient;
               lists.X_WaitingList.peek(patient);
                   
-              Treatment* t;
-              patient->getCurrentTreatment(t);
+              Treatment* xTreatment;
+              patient->getCurrentTreatment(xTreatment);
 
-               if (!t->canAssign(lists))
+               if (!xTreatment->canAssign(lists))
                    return;
-
 
               lists.X_WaitingList.dequeue(patient);
 
@@ -333,88 +344,48 @@ class Scheduler
                   lists.X_Rooms.dequeue(resource);
               }
 
-              Treatment* xTreatment;
-              patient->getCurrentTreatment(xTreatment);
-
               xTreatment->setAssResource(resource);
 
-              lists.inTreatmentList.enqueue(patient, timeStep + xTreatment->GetDuration());
+              lists.inTreatmentList.enqueue(patient, -(timeStep + xTreatment->GetDuration()));
           }
       }
 
       void HandleRP(Patient* p) {
           if (p->getPType() != 'R')
               return;
+          
+          // Priority Queue to store the treatments based on their TL
+          priQueue<Treatment*> newOrderTreatments;
 
-          int minTL = INT_MAX;
-          Treatment* chosenTreatment;
-          M1Queue* chosenList ;
-
-          LinkedQueue<Treatment*> tempList;
-          Treatment* tempTreatment;
-
-          while (p->getCurrentTreatment(tempTreatment)) {
+          Treatment* t;
+          while (p->getCurrentTreatment(t)) {
               p->RemoveTreatment();
+              int TL;
 
-              switch (tempTreatment->GetType())
+              // Getting the TL based on the treatment type
+              switch (t->GetType())
               {
-              case 'U':
-              {
-                  int currTL = lists.U_WaitingList.calculateTL();
-                  minTL = min(minTL, currTL);
-
-                  if (currTL == minTL)
-                  {
-                      chosenList = &(lists.U_WaitingList);
-                      chosenTreatment = tempTreatment;
-                  }
-
-                  break;
-              }
-
-              case 'X':
-              {
-                  int currTL = lists.X_WaitingList.calculateTL();
-                  minTL = min(minTL, currTL);
-
-                  if (currTL == minTL)
-                  {
-                      chosenList = &(lists.X_WaitingList);
-                      chosenTreatment = tempTreatment;
-                  }
-
-                  break;
-              }
               case 'E':
-              {
-                  int currTL = lists.E_WaitingList.calculateTL();
-                  minTL = min(minTL, currTL);
-
-                  if (currTL == minTL)
-                  {
-                      chosenList = &(lists.E_WaitingList);
-                      chosenTreatment = tempTreatment;
-                  }
-
+                  TL = lists.E_WaitingList.calculateTL();
                   break;
-              }
+              case 'U':
+                  TL = lists.U_WaitingList.calculateTL();
+                  break;
+              case 'X':
+                  TL = lists.X_WaitingList.calculateTL();
+                  break;
+              default:
+                  TL = 0;
+                  break;
+              };
 
-              }
-
-              tempList.enqueue(tempTreatment);
-
+              newOrderTreatments.enqueue(t, -TL); 
           }
 
-          p->AddTreatment(chosenTreatment);
-
-          while (tempList.dequeue(tempTreatment)) {
-              if (tempTreatment == chosenTreatment)
-                  continue;
-
-              p->AddTreatment(tempTreatment);
+          int _;
+          while (newOrderTreatments.dequeue(t, _)) {
+              p->AddTreatment(t);
           }
-
-          chosenList->enqueue(p);
       }
 
         void simulate(UIClass& UI) {
