@@ -62,8 +62,8 @@ public:
 	bool peek(T& topEntry, int& pri) {
 		if (isEmpty())
 			return false;
-
-		topEntry = head->getItem();
+		int dummy;
+		topEntry = head->getItem(dummy);
 		pri = head->getPri();
 		return true;
 	}

@@ -213,13 +213,15 @@ class Scheduler
                         lists.U_Deivces.enqueue(assignedResource);
                         break;
                     case 'X':
-                        XResource * xRes = (XResource * )assignedResource; // FIXME I don't like this, Eman/Marwa will hate it.
+                    {
+                        XResource* xRes = (XResource*)assignedResource; // FIXME I don't like this, Eman/Marwa will hate it.
                         if (xRes->getCount() < xRes->getCapacity())
                         {
                             lists.X_Rooms.enqueue(xRes);
                         }
-                        
+
                         break;
+                    }
                     default:
                         break;
                 }
@@ -241,7 +243,7 @@ class Scheduler
        {
         
             timeStep += 1;
-            MoveFromAll();
+            MoveFromAll();  // BETTER BE SEPARATED from simulateTImestep becasue we loop on it and go inside without any need
             dispatch();
             Assign_E(); 
             Assign_U();
@@ -341,6 +343,7 @@ class Scheduler
               lists.inTreatmentList.enqueue(patient, timeStep + xTreatment->GetDuration());
           }
       }
+
 
       void HandleRP(Patient* p) {
           if (p->getPType() != 'R')
