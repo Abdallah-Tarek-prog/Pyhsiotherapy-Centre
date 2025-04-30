@@ -14,8 +14,9 @@ public:
 	{
 		return !lists.E_Deivces.isEmpty(); 
 	}
-	void MoveToWait(Scheduler* sch) override
+	void MoveToWait(Scheduler* sch, Patient* p) override
 	{
+		sch->AddToWait_E(p);
 	}
 };
 

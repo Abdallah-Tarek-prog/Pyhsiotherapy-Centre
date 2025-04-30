@@ -23,7 +23,7 @@ public:
 		this->Type = type;
 	}
 	virtual bool canAssign(Lists& lists)=0;
-	virtual void MoveToWait(Scheduler* PTR)=0;
+	virtual void MoveToWait(Scheduler* PTR, Patient* p)=0;
 	void setST(int time)
 	{
 		ST = time;
