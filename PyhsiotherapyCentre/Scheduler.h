@@ -620,14 +620,18 @@ class Scheduler
                   AvgLatePenalty = static_cast<double>(stat.totalLatePenalty) / (PNum - stat.numberOfEarly);
               }
 
+              double AvgTotalTreatmentTimeN = stat.normalPatientNum > 0? (double)stat.normalTotalTreatmentTime / stat.normalPatientNum: 0;
+              double AvgTotalWaitTimeN = stat.normalPatientNum > 0? (double)stat.normalTotalWaitingTime / stat.normalPatientNum: 0;
+              double AvgTotalTreatmentTimeR = stat.recoveringPatientNum > 0? (double)stat.recoveringTotalTreatmentTime / stat.recoveringPatientNum: 0;
+              double AvgTotalWaitTimeR = stat.recoveringPatientNum > 0? (double)stat.recoveringTotalWaitingTime / stat.recoveringPatientNum: 0;
               Outfile << "Total number of timesteps = " << timeStep << endl
                   << "Total number of all, N, and R patients = " << PNum << " , " << stat.normalPatientNum << " , " << stat.recoveringPatientNum << endl
                   << "Average total waiting time for all, N, and R patients = " << fixed << setprecision(2)
-                  << TotalWaitingTime / PNum << " , " << (double)stat.normalTotalWaitingTime / stat.normalPatientNum
-                  << " , " << (double)stat.recoveringTotalWaitingTime / stat.recoveringPatientNum << endl
+                  << TotalWaitingTime / PNum << " , " << AvgTotalWaitTimeN
+                  << " , " << AvgTotalWaitTimeR << endl
                   << "Average total treatment time for all, N, and R patients = "
-                  << TotalTreatmentTime / PNum << " , " << (double)stat.normalTotalTreatmentTime / stat.normalPatientNum
-                  << " , " << (double)stat.recoveringTotalTreatmentTime / stat.recoveringPatientNum << endl
+                  << TotalTreatmentTime / PNum << " , " << AvgTotalTreatmentTimeN
+                  << " , " << AvgTotalTreatmentTimeR << endl
                   << "Percentage of patients of an accepted cancellation (%) = "
                   << (double)stat.numberOfCancel * 100 / PNum << " %\n"
                   << "Percentage of patients of an accepted rescheduling(%) = "
