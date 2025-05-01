@@ -33,12 +33,12 @@ class Scheduler
 
             while (EDevices--) {
                 UEResource* newResource = new UEResource('E');
-                lists.E_Deivces.enqueue(newResource);
+                lists.E_Devices.enqueue(newResource);
             }
 
             while (UDevices--) {
                 UEResource* newResource = new UEResource('U');
-                lists.U_Deivces.enqueue(newResource);
+                lists.U_Devices.enqueue(newResource);
             }
 
             while (XDevices--) {
@@ -84,17 +84,19 @@ class Scheduler
                     {
                         U_Therapy* uTreatment = new U_Therapy(treatmentDuration);
                         newPatient->AddTreatment(uTreatment);
+                        break;
                     }
                     case 'E':
                     {
                         E_Therapy* eTreatment = new E_Therapy(treatmentDuration);
                         newPatient->AddTreatment(eTreatment);
-
+                        break;
                     }
                     case 'X':
                     {
                         X_Therapy* xTreatment = new X_Therapy(treatmentDuration);
                         newPatient->AddTreatment(xTreatment);
+                        break;
                     }
                     }
                 }
@@ -232,10 +234,10 @@ class Scheduler
                 switch(assignedResource->getType())
                 {
                     case 'E':
-                        lists.E_Deivces.enqueue(assignedResource);
+                        lists.E_Devices.enqueue(assignedResource);
                         break;
                     case 'U':
-                        lists.U_Deivces.enqueue(assignedResource);
+                        lists.U_Devices.enqueue(assignedResource);
                         break;
                     case 'X':
                     {
@@ -375,7 +377,7 @@ class Scheduler
               lists.E_WaitingList.dequeue(patient);
 
               UEResource* resource;
-              lists.E_Deivces.dequeue(resource);
+              lists.E_Devices.dequeue(resource);
 
               eTreatment->setAssResource(resource);
               eTreatment->setST(timeStep);
@@ -398,7 +400,7 @@ class Scheduler
               lists.U_WaitingList.dequeue(patient);
 
               UEResource* resource;
-              lists.U_Deivces.dequeue(resource);
+              lists.U_Devices.dequeue(resource);
 
               uTreatment->setAssResource(resource);
               uTreatment->setST(timeStep);

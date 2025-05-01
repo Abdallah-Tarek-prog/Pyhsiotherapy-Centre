@@ -87,14 +87,14 @@ void UIClass::printLists(Lists& list, int timestep) const {
 
 
 	std::cout << "================ Avail E-Devices ================\n";
-	std::cout << list.E_Deivces.getCount() << " Electro device: ";
-	list.E_Deivces.print();
+	std::cout << list.E_Devices.getCount() << " Electro device: ";
+	list.E_Devices.print();
 	cout << '\n';
 
 
 	std::cout << "================ Avail U-Devices ================\n";
-	std::cout << list.U_Deivces.getCount() << " Ultra device: ";
-	list.U_Deivces.print();
+	std::cout << list.U_Devices.getCount() << " Ultra device: ";
+	list.U_Devices.print();
 	cout << '\n';
 
 

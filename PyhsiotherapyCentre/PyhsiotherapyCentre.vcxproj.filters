@@ -27,6 +27,15 @@
     <ClCompile Include="PyhsiotherapyCentre.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="E_Therapy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="U_Therapy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="X_Therapy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Patient.h">

@@ -127,7 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="E_Therapy.cpp" />
     <ClCompile Include="PyhsiotherapyCentre.cpp" />
+    <ClCompile Include="U_Therapy.cpp" />
+    <ClCompile Include="X_Therapy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArrayStack.h" />

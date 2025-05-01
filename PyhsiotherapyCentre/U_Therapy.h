@@ -1,7 +1,6 @@
 #pragma once
 #include "Treatment.h"
-
-class Scheduler;
+#include "Scheduler.h"
 class U_Therapy : public Treatment
 {
 public:
@@ -9,13 +8,7 @@ public:
 	{
 	}
 	// No Representation for these two is required in phase 1
-	bool canAssign(Lists& lists) override
-	{
-		return !lists.U_Deivces.isEmpty(); 
-	}
-	void MoveToWait(Scheduler* sch, Patient* p) override
-	{
-		sch->AddToWait_U(p);
-	}
+	bool canAssign(Lists& lists) override;
+	void MoveToWait(Scheduler* sch, Patient* p) override;
 };
 
