@@ -514,7 +514,7 @@ class Scheduler
         void PrintOutputFile(UIClass& UI)
         {
             string filename = UI.getFileName("Output");
-            ofstream Outfile(filename);
+            ofstream Outfile(filename+".txt");
             if (!Outfile)
             {
                 cout << "Error occured Output File wasn't created\n";
