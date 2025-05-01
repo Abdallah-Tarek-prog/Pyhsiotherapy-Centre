@@ -11,7 +11,7 @@ public:
 	}
 	
 
-/// @return `bool` indicating whether or not this is the first time for this patient to reschedule.
+/// return `bool` indicating whether or not this is the first time for this patient to reschedule.
 	bool Reschedule(int index)
 	{	
 		int _pri;

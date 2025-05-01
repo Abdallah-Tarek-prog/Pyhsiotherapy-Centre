@@ -13,6 +13,7 @@ Patient::Patient(char PType, int PT, int VT) {
     TT = 0;
     WT = 0;
     FT = 0;
+    Rescheduled = 0;
 }
 
 void Patient::AddTreatment(Treatment* treatment) {
