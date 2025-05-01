@@ -11,10 +11,12 @@ private:
 	int ID;	
 	int PT;	// Appointment Time
 	int VT;	// Arrival Time
-
 	int FT;	// Finish Time
 	int WT; // Waiting Time
 	int TT; // Treatment Time	// Can't be the summation of Treatments' duration because he may cancel X-treatment
+	// FT = total waiting Time + total treatment Time
+	// so We will calculate the total treatment time
+
 	bool Cancelled;
 	bool Rescheduled;
 
@@ -23,6 +25,7 @@ private:
 	Treatment* CurrTreatment;
  	pState state;
 	char PType; // R for recovering  ,   N for Normal
+	char LastTreatment;
 	
 public:
 	Patient(char PType, int PT, int VT)
@@ -33,6 +36,9 @@ public:
 		this->VT = VT;
 		state = Idle;
 		CurrTreatment = NULL;
+		TT = 0;
+		WT = 0;
+		FT = 0;
 		// All patients when created are idle and they still idle in all patients list 
 		// until their VT becomes equal to the timestep
 		
@@ -58,24 +64,17 @@ public:
 	bool getCurrentTreatment(Treatment*& treatment) {
 		if (Treatments.isEmpty())
 			return false;
-		Treatments.peek(treatment);
+		treatment = CurrTreatment;	// Check that this is always updated
 		return true;
 	}
-	char LastTreatmentType()
+	void setLastTreatment(char treat)
 	{
-		LinkedQueue<Treatment*>temp;
-		Treatment* treat;
-		while (Treatments.dequeue(treat))
-		{
-			temp.enqueue(treat);
-		}
-		char LastType=treat->GetType(); // Last treatment type
-
-		while (temp.dequeue(treat))
-		{
-			Treatments.enqueue(treat);
-		}
-		return LastType;
+		LastTreatment = toupper(treat);
+	}
+	char LastTreatmentType()
+	{	// Last inserted treatment instead of looping on all the list becasue it may be modified
+		// in case of Recovering patient when sorting
+		return LastTreatment;
 	}
 
 	void setState(pState state)

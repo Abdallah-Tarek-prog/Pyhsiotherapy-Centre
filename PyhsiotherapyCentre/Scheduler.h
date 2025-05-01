@@ -22,6 +22,7 @@ class Scheduler
         int PNum; // Patients total Number
         int PCancel;
         int PResc;
+        bool Silent;
 
         // helper functions for input reading
         
@@ -58,6 +59,10 @@ class Scheduler
             while (patientNumber--) {
                 char patientType;
                 inputFile >> patientType;
+                if (patientType == 'R')
+                    stat.recoveringPatientNum++;
+                else if (patientType == 'N')
+                    stat.normalPatientNum++;
 
                 int PT, VT;
                 inputFile >> PT >> VT;
@@ -67,8 +72,8 @@ class Scheduler
                 int treatmentNumber;
                 inputFile >> treatmentNumber;
 
-                while (treatmentNumber--) {
                     char treatmentType;
+                while (treatmentNumber--) {
                     int treatmentDuration;
                     
                     inputFile >> treatmentType >> treatmentDuration;
@@ -93,7 +98,7 @@ class Scheduler
                     }
                     }
                 }
-
+                newPatient->setLastTreatment(treatmentType);
                 lists.allPatientsList.enqueue(newPatient);
             }
         }
@@ -126,6 +131,22 @@ class Scheduler
         {
             srand(time(0));
             timeStep = -1;
+
+            stat.normalPatientNum=0;
+            stat.recoveringPatientNum=0;
+
+            stat.normalTotalWaitingTime=0;
+            stat.recoveringTotalWaitingTime=0;
+
+            stat.normalTotalTreatmentTime=0;
+            stat.recoveringTotalTreatmentTime=0;
+
+            stat.numberOfCancel=0;
+           stat.numberOfReschedule=0;
+
+            stat.numberOfEarly=0;
+            stat.totalLatePenalty=0;
+                
         }
 
         ~Scheduler()
@@ -143,7 +164,7 @@ class Scheduler
                     lists.allPatientsList.dequeue(temp);
                     
 
-                    // Will handle this in the simulateTimestep function
+                    // Will handle this in the simulateTimestep function (as early patients)
                     //
                     // if(topPatient->getVT() == topPatient->getPT()){
                     //     RandomWaiting()->enqueue(topPatient);
@@ -155,10 +176,12 @@ class Scheduler
                     if(topPatient->getVT() > topPatient->getPT()){
                         int penalty = (topPatient->getVT() - topPatient->getPT()) / 2;
                         topPatient->setState(Patient::Late);
+                        stat.totalLatePenalty += penalty;
                         lists.lateList.enqueue(topPatient, -(topPatient->getVT() + penalty));
                     }else{
                         topPatient->setState(Patient::Early);
                         lists.earlyList.enqueue(topPatient, -(topPatient->getPT()));
+                        stat.numberOfEarly++;
                     }
                 }
                 else {
@@ -174,6 +197,7 @@ class Scheduler
             // Move patients from earlyList to the appropriate waiting list.
             while(lists.earlyList.peek(p, _)) {
                 if(p->getPT() > timeStep)  break;
+                if (p->getPType() == 'R') HandleRP(p);
                 Treatment* t;
                 if (p->getCurrentTreatment(t)) {
                     t->MoveToWait(this, p);
@@ -184,6 +208,7 @@ class Scheduler
             int VtPenalty; // VT + Penalty
             while(lists.lateList.peek(p, VtPenalty)) {
                 if(-VtPenalty > timeStep)  break; // Negating since priority is negative.
+                if (p->getPType() == 'R') HandleRP(p);
                 Treatment* t;
                 if (p->getCurrentTreatment(t)) {
                     t->MoveToWait(this, p);    // TODO I need to be able to tell it that the patient came from the late list so that hes put in the waiting list according to PT + Penalty. For now, I will rely on the state.
@@ -215,40 +240,96 @@ class Scheduler
                     case 'X':
                     {
                         XResource* xRes = (XResource*)assignedResource; // FIXME I don't like this, Eman/Marwa will hate it.
-                        if (xRes->getCount() < xRes->getCapacity())
+                        if (xRes->getCount() == xRes->getCapacity()) // if the room was removed add it to the available list
                         {
                             lists.X_Rooms.enqueue(xRes);
                         }
+                        xRes->DeCount();  // Decrement its count
 
                         break;
                     }
                     default:
                         break;
                 }
+                
+                p->setTT(p->getTT() + timeStep - t->GetST());
+                t->setAssResource(NULL); // For Saftey measures when Debugging
+
                 p->RemoveTreatment();
-                if(p->getCurrentTreatment(t)){
+                if (p->getPType() == 'R') HandleRP(p);
+
+                if(p->getCurrentTreatment(t))
+                {
                     t->MoveToWait(this, p);
-                }else{
+                }
+                else
+                {
                     p->setFT(timeStep);
                     p->setState(Patient::Finished);
+                    p->setWT(timeStep - p->getTT());
+                    if (p->getPType() == 'R')
+                    {
+                        stat.recoveringTotalWaitingTime += p->getWT();
+                        stat.recoveringTotalTreatmentTime += p->getTT();
+                    }
+                    else if (p->getPType() == 'N')
+                    {
+                        stat.normalTotalWaitingTime += p->getWT();
+                        stat.normalTotalTreatmentTime += p->getTT();
+                    }
+
+                    lists.finishedList.push(p);
                 }
 
                 lists.inTreatmentList.dequeue(p, pri);
             }
         }
 
-
+        void ReschSimulation()
+        {
+            if (lists.earlyList.getCount() != 0)    
+            {
+                int ProbResch = rand() % 101;
+                if (ProbResch < PResc) {
+                    int ranNum = rand();
+                    ranNum %= lists.earlyList.getCount();
+                    lists.earlyList.Reschedule(ranNum);
+                    stat.numberOfReschedule++;
+                }
+            }
+        }
+        void CancSimulation()
+        {
+            if (lists.X_WaitingList.getCount() != 0)
+            {
+                int ProbCancel = rand() % 101;
+                if (ProbCancel < PCancel) {
+                    int ranNum = rand();
+                    Patient* pat;
+                    ranNum %= lists.X_WaitingList.getCount();
+                    if (lists.X_WaitingList.Cancel(ranNum, pat))
+                    {
+                        pat->setState(Patient::Finished);
+                        pat->setCancelled(true);
+                        stat.numberOfCancel++;
+                        lists.finishedList.push(pat);
+                    }
+                }
+            }
+        }
 
       void simulateTimestep()
        {
         
             timeStep += 1;
-            MoveFromAll();  // BETTER BE SEPARATED from simulateTImestep becasue we loop on it and go inside without any need
+            checkout(); // Returning back the devices after finishing should be done at first !!! 
+            MoveFromAll();
+            ReschSimulation();  // For handling rescheduling in early list
             dispatch();
-            Assign_E(); 
+            CancSimulation();   // For handling cancelling 
+            Assign_E();     
             Assign_U();
             Assign_X();
-            checkout();
         
        }
 
@@ -297,6 +378,7 @@ class Scheduler
               lists.E_Deivces.dequeue(resource);
 
               eTreatment->setAssResource(resource);
+              eTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + eTreatment->GetDuration()));
           }
@@ -319,6 +401,7 @@ class Scheduler
               lists.U_Deivces.dequeue(resource);
 
               uTreatment->setAssResource(resource);
+              uTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + uTreatment->GetDuration()));
           }
@@ -347,13 +430,14 @@ class Scheduler
               }
 
               xTreatment->setAssResource(resource);
+              xTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + xTreatment->GetDuration()));
           }
       }
 
 
-      void HandleRP(Patient* p) {
+      void HandleRP(Patient* p) {       // Every time we want to insert RP into a waiting this is called
           if (p->getPType() != 'R')
               return;
           
@@ -393,23 +477,26 @@ class Scheduler
 
         void simulate(UIClass& UI) {
             readInputFile(UI);
+            Silent = UI.GetState();
             while (lists.finishedList.getCount()!=PNum) {
                 simulateTimestep();
                 UI.printLists(lists, timeStep);
                 UI.waitKeyPress();
             }
-            cout << "----------------------------  Simulation Ended press @ to exit  ----------------------------";
+            UI.print("----------------------------  Simulation Ended press @ to exit  ----------------------------");
             int dummy;
             do 
             {  dummy = _getch(); }
             while (dummy!='@');
-            PrintOutputFile();
-            cout << "Output file is created\n";
+
+            PrintOutputFile(UI);
+            UI.print("Output file is created\n");
         }
 
-        void PrintOutputFile()
+        void PrintOutputFile(UIClass& UI)
         {
-            ofstream Outfile("Output File");
+            string filename = UI.getFileName("Output");
+            ofstream Outfile(filename);
             if (!Outfile)
             {
                 cout << "Error occured Output File wasn't created\n";
@@ -417,10 +504,10 @@ class Scheduler
             else
             {
                 Patient* pat;
-                cout << "PID PType PT VT FT WT TT Cancel Resc\n";
+                Outfile << "PID PType PT VT FT WT TT Cancel Resc\n";
                 while (lists.finishedList.pop(pat))
                 {
-                    cout << "P" << pat->getID() << "  "
+                    Outfile << "P" << pat->getID() << "  "
                         << "PType" << pat->getPType() << "  "
                         << pat->getPT() << "  "
                         << pat->getVT() << "  "
@@ -429,18 +516,18 @@ class Scheduler
                         << pat->getTT() << "   ";
 
                     if (pat->isCancelled())
-                        cout << "T    ";
-                    else cout << "F     ";
+                        Outfile << "T    ";
+                    else Outfile << "F     ";
 
                     if (pat->isRescheduled())
-                        cout << "T    ";
-                    else cout << "F     ";
-                    cout << endl;
+                        Outfile << "T    ";
+                    else Outfile << "F     ";
+                    Outfile << endl;
                 }
                 double TotalWaitingTime = stat.normalTotalWaitingTime + stat.recoveringTotalWaitingTime;
                 double TotalTreatmentTime = stat.normalTotalTreatmentTime + stat.recoveringTotalTreatmentTime;
 
-                cout << "Total number of timesteps = " << timeStep << endl // Considering timestep is the last one
+                Outfile << "Total number of timesteps = " << timeStep << endl // Considering timestep is the last one
                     << "Total number of all, N, and R patients = " << PNum << " , " << stat.normalPatientNum << " , " << stat.recoveringPatientNum << endl
                     << "Average total waiting time for all, N, and R patients = " << fixed << setprecision(2) << TotalWaitingTime / PNum << " , " << (double)stat.normalTotalWaitingTime / stat.normalPatientNum << " , " << (double)stat.recoveringTotalWaitingTime / stat.recoveringPatientNum << endl
                     << "Average total treatment time for all, N, and R patients = " << TotalTreatmentTime / PNum << " , " << (double)stat.normalTotalTreatmentTime / stat.normalPatientNum << " , " << (double)stat.recoveringTotalTreatmentTime / stat.recoveringPatientNum << endl

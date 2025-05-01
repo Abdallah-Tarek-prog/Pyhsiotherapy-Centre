@@ -19,6 +19,7 @@ class M2Queue : public M1Queue
 			frontPtr=frontPtr->getNext();
 			count--;
 			delete temp;
+			TL -= Delinked->TreatmentDuration();
 			return true;
 		}
 		Node<Patient*>* current = frontPtr->getNext();
@@ -32,7 +33,7 @@ class M2Queue : public M1Queue
 		}
 
 		if (current->getItem()->LastTreatmentType() != 'X')	//Checking before Cancelling
-			return false;
+		return false;
 
 		becurrent->setNext(current->getNext());
 		Delinked = current->getItem();
@@ -41,6 +42,7 @@ class M2Queue : public M1Queue
 			backPtr = becurrent;
 		}
 		delete current;
+		TL -= Delinked->TreatmentDuration();
 		return true;
 	}
 	

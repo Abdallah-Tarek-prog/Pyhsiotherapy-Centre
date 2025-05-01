@@ -18,6 +18,8 @@ public:
 			head = head->getNext();
 			// Delinking 
 			 count--;
+			 // setRescheduled 
+			 temp->getItem(_pri)->setRescheduled(true);
 			// Generating new PT from PT+1 up to 3*PT		// Randomly but limited 
 			int NewPT = temp->getItem(_pri)->getPT();
 			NewPT = NewPT + 1 + rand() % (2 * NewPT);
@@ -38,7 +40,7 @@ public:
 		}
 		becurrent->setNext(current->getNext());	// De-link current 
 		count--;
-
+		current->getItem(_pri)->setRescheduled(true);
 		int NewPT = current->getItem(_pri)->getPT();
 		NewPT = NewPT + 1 + rand() % (2 * NewPT);
 		enqueue(current->getItem(_pri), -1 * NewPT);			//Priority Negated

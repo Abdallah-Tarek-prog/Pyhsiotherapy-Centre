@@ -13,6 +13,26 @@ public:
 	std::string getFileName(const std::string& type) const;
 	void printLists(Lists& lists, int timestep) const;
 	void waitKeyPress() const;
+	void print(const std::string& message)const
+	{
+		cout << message;
+	}
+	bool GetState()
+	{
+		 char ch;
+		cout << "----------------------------------\n";
+		cout<<"Enter 'S' for Silent mode\n"
+			<<"      'I' for Interactive mode\n";
+		do
+		{
+			cin >> ch;
+			ch = toupper(ch);
+		} while (ch != 'S' && ch != 'I');
+		cout << "----------------------------------\n";
+		if (ch == 'S')
+			return true; // For Silent
+		return false; // For Interactive
+	}
 };
 
 

@@ -44,6 +44,7 @@ public:
 			return;
 		}
 		count++;
+		TL += pat->TreatmentDuration();
 		// The Patient should be inserted with given priortiy and sorted with respect to PT
 		// this implementation sorts decscendingly like 9 8 7 6
 		if (frontPtr->getItem()->getPT() < priority)
