@@ -497,12 +497,12 @@ class Scheduler
           }
           if (!Silent)
           {
-          UI.print("----------------------------  Simulation Ended press @ to exit  ----------------------------");
-          int dummy;
+             UI.print("----------------------------  Simulation Ended press @ to exit  ----------------------------");
+             int dummy;
           do
-          {
-              dummy = _getch();
-          } while (dummy != '@');
+             {
+                    dummy = _getch();
+             } while (dummy != '@');
           }
             PrintOutputFile(UI);
             if (!Silent) {

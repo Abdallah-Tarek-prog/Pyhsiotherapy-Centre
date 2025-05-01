@@ -364,3 +364,5 @@ FodyWeavers.xsd
 
 # Scripts
 *.py
+/PyhsiotherapyCentre/Out.txt
+/PyhsiotherapyCentre/VideoInput.txt
