@@ -155,7 +155,7 @@ bool LinkedQueue<T>:: dequeue(T& frntEntry)
 		
 	// Free memory reserved for the dequeued node
 	delete nodeToDeletePtr;
-
+	nodeToDeletePtr = nullptr;
 	return true;
 
 }

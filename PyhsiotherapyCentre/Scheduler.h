@@ -228,9 +228,9 @@ class Scheduler
             while(lists.inTreatmentList.peek(p, pri)) {
                 Treatment* t;
                 p->getCurrentTreatment(t);
-                //int leaveTime = t->GetST() + t->GetDuration(); I assume the priority is the same thing as this.
-                int leaveTime = -pri;
-                if(pri > timeStep) break;
+                int leaveTime = t->GetST() + t->GetDuration(); // I assume the priority is the same thing as this.
+                //int leaveTime = -pri;
+                if(leaveTime > timeStep) break;
                 UEResource * assignedResource = t->GetAssResource();
                 switch(assignedResource->getType())
                 {
@@ -240,7 +240,7 @@ class Scheduler
                     case 'U':
                         lists.U_Devices.enqueue(assignedResource);
                         break;
-                    case 'X':
+                    case 'R':
                     {
                         XResource* xRes = (XResource*)assignedResource;
                         if (xRes->getCount() == xRes->getCapacity()) // if the room was removed add it to the available list
@@ -523,11 +523,11 @@ class Scheduler
             else
             {
                 Patient* pat;
-                Outfile << "PID PType PT\tVT\tFT\tWT\tTT\tCancel Resc\n";
+                Outfile << "PID\tPType\tPT\tVT\tFT\tWT\tTT\tCancel\t\tResc\n";
                 while (lists.finishedList.pop(pat))
                 {
-                    Outfile << "P" << pat->getID() << "  "
-                        << pat->getPType() << "     "
+                    Outfile << "P" << pat->getID() << "\t"
+                        << pat->getPType() << "\t\t"
                         << pat->getPT() << "\t"
                         << pat->getVT() << "\t"
                         << pat->getFT() << "\t"
@@ -535,8 +535,8 @@ class Scheduler
                         << pat->getTT() << "\t";
 
                     if (pat->isCancelled())
-                        Outfile << "T      ";
-                    else Outfile << "F      ";
+                        Outfile << "T\t\t";
+                    else Outfile << "F\t\t";
 
                     if (pat->getRescheduled() > 0)
                         Outfile << "T    ";
