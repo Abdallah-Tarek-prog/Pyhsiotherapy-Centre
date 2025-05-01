@@ -29,7 +29,7 @@ public:
 			NewPT = NewPT + 1 + rand() % (2 * NewPT);
 			enqueue(temp->getItem(_pri), -1 * NewPT);			//Priority Negated
 			delete temp;
-			return temp->getItem(_pri)->getRescheduled() == 0; // If 0 then this is the first time for this patient to reschedule.
+			return temp->getItem(_pri)->getRescheduled() == 1; // If 0 then this is the first time for this patient to reschedule.
 		}
 
 		int i = 1;
@@ -45,12 +45,14 @@ public:
 		if(current->getItem(_pri)->getRescheduled() >= 3) return false; // No reschedule occured (no need to increase statistic)
 		becurrent->setNext(current->getNext());	// De-link current 
 		count--;
+
 		current->getItem(_pri)->incRescheduled();
+		int newRescheduled = current->getItem(_pri)->getRescheduled();
 		int NewPT = current->getItem(_pri)->getPT();
 		NewPT = NewPT + 1 + rand() % (2 * NewPT);
 		enqueue(current->getItem(_pri), -1 * NewPT);			//Priority Negated
 		delete current;
-		return current->getItem(_pri)->getRescheduled() == 0; // If 0 then this is the first time for this patient to reschedule.
+		return  newRescheduled == 1; // If 0 then this is the first time for this patient to reschedule.
 
 
 		// Reschedule implementation isn't the most Optimized 
