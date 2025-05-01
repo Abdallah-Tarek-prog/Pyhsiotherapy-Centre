@@ -475,22 +475,31 @@ class Scheduler
           }
       }
 
-        void simulate(UIClass& UI) {
-            readInputFile(UI);
-            Silent = UI.GetState();
-            while (lists.finishedList.getCount()!=PNum) {
-                simulateTimestep();
-                UI.printLists(lists, timeStep);
-                UI.waitKeyPress();
-            }
-            UI.print("----------------------------  Simulation Ended press @ to exit  ----------------------------");
-            int dummy;
-            do 
-            {  dummy = _getch(); }
-            while (dummy!='@');
-
+      void simulate(UIClass& UI) {
+          readInputFile(UI);
+          Silent = UI.GetState();
+          while (lists.finishedList.getCount() != PNum) {
+              simulateTimestep();
+              if (!Silent) {
+                  UI.printLists(lists, timeStep);
+                  UI.waitKeyPress();
+              }
+          }
+          if (!Silent)
+          {
+          UI.print("----------------------------  Simulation Ended press @ to exit  ----------------------------");
+          int dummy;
+          do
+          {
+              dummy = _getch();
+          } while (dummy != '@');
+          }
             PrintOutputFile(UI);
-            UI.print("Output file is created\n");
+            if (!Silent) {
+                UI.print("Output File is created\n");
+            }
+            else
+                UI.print("Silent Mode, Simulation ends, Output file created\n");
         }
 
         void PrintOutputFile(UIClass& UI)
