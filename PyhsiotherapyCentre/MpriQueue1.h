@@ -9,13 +9,16 @@ public:
 	{
 		
 	}
+	
+
+/// @return `bool` indicating whether or not this is the first time for this patient to reschedule.
 	bool Reschedule(int index)
 	{	
 		int _pri;
 		if (index == 0)
 		{
 			priNode<Patient*>* temp=head;
-			if(temp->getItem(_pri)->getRescheduled() >= 3) return false;
+			if(temp->getItem(_pri)->getRescheduled() >= 3) return false; // No reschedule occured (no need to increase statistic)
 			head = head->getNext();
 			// Delinking 
 			count--;
@@ -26,7 +29,7 @@ public:
 			NewPT = NewPT + 1 + rand() % (2 * NewPT);
 			enqueue(temp->getItem(_pri), -1 * NewPT);			//Priority Negated
 			delete temp;
-			return true;
+			return temp->getItem(_pri)->getRescheduled() == 0; // If 0 then this is the first time for this patient to reschedule.
 		}
 
 		int i = 1;
@@ -39,7 +42,7 @@ public:
 			becurrent = becurrent->getNext();
 			i += 1;
 		}
-		if(current->getItem(_pri)->getRescheduled() >= 3) return false;
+		if(current->getItem(_pri)->getRescheduled() >= 3) return false; // No reschedule occured (no need to increase statistic)
 		becurrent->setNext(current->getNext());	// De-link current 
 		count--;
 		current->getItem(_pri)->incRescheduled();
@@ -47,7 +50,7 @@ public:
 		NewPT = NewPT + 1 + rand() % (2 * NewPT);
 		enqueue(current->getItem(_pri), -1 * NewPT);			//Priority Negated
 		delete current;
-		return true;
+		return current->getItem(_pri)->getRescheduled() == 0; // If 0 then this is the first time for this patient to reschedule.
 
 
 		// Reschedule implementation isn't the most Optimized 

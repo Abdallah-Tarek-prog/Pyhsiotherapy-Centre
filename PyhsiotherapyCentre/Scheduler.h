@@ -298,6 +298,7 @@ class Scheduler
                     ranNum %= lists.earlyList.getCount();
                     if(lists.earlyList.Reschedule(ranNum))
                         stat.numberOfReschedule++;
+
                 }
             }
         }
