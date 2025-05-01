@@ -1,5 +1,5 @@
 #include "E_Therapy.h"
-
+#include "Scheduler.h"
 
 
 bool E_Therapy::canAssign(Lists& lists) 

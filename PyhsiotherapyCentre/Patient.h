@@ -1,153 +1,57 @@
 #pragma once
 #include <iostream>
-#include"LinkedQueue.h"
-#include"Treatment.h"
+#include "LinkedQueue.h"
+#include "Treatment.h"
 
-class Patient
-{
+class Patient {
 public:
-	enum pState { Early, Late, Idle, Wait, Serv ,Finished };
+    enum pState { Early, Late, Idle, Wait, Serv, Finished };
+
 private:
-	int ID;	
-	int PT;	// Appointment Time
-	int VT;	// Arrival Time
-	int FT;	// Finish Time
-	int WT; // Waiting Time
-	int TT; // Treatment Time	// Can't be the summation of Treatments' duration because he may cancel X-treatment
-	// FT = total waiting Time + total treatment Time
-	// so We will calculate the total treatment time
+    int ID;
+    int PT; // Appointment Time
+    int VT; // Arrival Time
+    int FT; // Finish Time
+    int WT; // Waiting Time
+    int TT; // Treatment Time
 
-	bool Cancelled;
-	bool Rescheduled;
+    bool Cancelled;
+    bool Rescheduled;
 
-	static int IDGenerator;
-	LinkedQueue<Treatment*> Treatments;
-	Treatment* CurrTreatment;
- 	pState state;
-	char PType; // R for recovering  ,   N for Normal
-	char LastTreatment;
-	
+    static int IDGenerator;
+    LinkedQueue<Treatment*> Treatments;
+    Treatment* CurrTreatment;
+    pState state;
+    char PType; // R for recovering, N for Normal
+    char LastTreatment;
+
 public:
-	Patient(char PType, int PT, int VT)
-	{
-		ID = ++IDGenerator;
-		this->PType = toupper(PType);
-		this->PT = PT;
-		this->VT = VT;
-		state = Idle;
-		CurrTreatment = NULL;
-		TT = 0;
-		WT = 0;
-		FT = 0;
-		// All patients when created are idle and they still idle in all patients list 
-		// until their VT becomes equal to the timestep
-		
-	}
+    Patient(char PType, int PT, int VT);
 
-	void AddTreatment(Treatment* treatment) {
-		if (Treatments.isEmpty())
-			CurrTreatment = treatment;
+    void AddTreatment(Treatment* treatment);
+    void RemoveTreatment();
+    bool getCurrentTreatment(Treatment*& treatment);
+    void setLastTreatment(char treat);
+    char LastTreatmentType();
+    void setState(pState state);
+    pState getState() const;
+    int TreatmentDuration();
+    int getPT() const;
+    int getID() const;
+    void setPT(int pt);
+    int getVT() const;
+    void setVT(int vt);
+    char getPType() const;
+    int getFT() const;
+    void setFT(int ft);
+    int getWT() const;
+    void setWT(int wt);
+    int getTT() const;
+    void setTT(int tt);
+    bool isCancelled() const;
+    void setCancelled(bool cancelled);
+    bool isRescheduled() const;
+    void setRescheduled(bool rescheduled);
 
-		Treatments.enqueue(treatment);
-	}
-
-	void RemoveTreatment() {
-		if (Treatments.isEmpty())
-			return;
-
-		Treatment* temp;
-		Treatments.dequeue(temp);
-
-		Treatments.peek(CurrTreatment);
-	}
-
-	bool getCurrentTreatment(Treatment*& treatment) {
-		if (Treatments.isEmpty())
-			return false;
-		treatment = CurrTreatment;	// Check that this is always updated
-		return true;
-	}
-	void setLastTreatment(char treat)
-	{
-		LastTreatment = toupper(treat);
-	}
-	char LastTreatmentType()
-	{	// Last inserted treatment instead of looping on all the list becasue it may be modified
-		// in case of Recovering patient when sorting
-		return LastTreatment;
-	}
-
-	void setState(pState state)
-	{
-		this->state = state;
-	}
-
-	pState getState() const { return state; }
-
-	int TreatmentDuration()
-	{
-		return CurrTreatment->GetDuration();
-	}
-
-	int getPT() const
-	{ return PT; }
-
-	int getID() const
-	{
-		return ID;
-	}
-	void setPT(int pt)
-	{ PT = pt; }
-
-	int getVT() const 
-	{ return VT; }
-
-	void setVT(int vt)
-	{ VT = vt; }
-
-	char getPType()const
-	{
-		return PType;
-	}
-
-	int getFT() const { return FT; }
-	void setFT(int ft) { FT = ft; }
-
-	int getWT() const { return WT; }
-	void setWT(int wt) { WT = wt; }
-
-	int getTT() const { return TT; }
-	void setTT(int tt) { TT = tt; }
-
-	bool isCancelled() const { return Cancelled; }
-	void setCancelled(bool cancelled) { Cancelled = cancelled; }
-
-	bool isRescheduled() const { return Rescheduled; }
-	void setRescheduled(bool rescheduled) {
-		Rescheduled = rescheduled;
-	}
-
-	friend std::ostream& operator<<(std::ostream& out, Patient& p) {
-
-		if (p.state == pState::Idle) {
-		
-			out << 'P' << p.ID << '_' << p.VT;
-			return out;
-		}
-
-		if (p.state == pState::Serv) {
-			UEResource* resource = p.CurrTreatment->GetAssResource();
-
-			std::cout << 'P' << p.ID << '_';
-			std::cout << resource->getType() << resource->getID();
-		
-			return out;
-		}
-
-
-		out << p.ID;
-
-		return out;
-	}
+    friend std::ostream& operator<<(std::ostream& out, Patient& p);
 };
- int Patient::IDGenerator=0;

@@ -128,7 +128,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="E_Therapy.cpp" />
+    <ClCompile Include="Patient.cpp" />
     <ClCompile Include="PyhsiotherapyCentre.cpp" />
+    <ClCompile Include="UEResource.cpp" />
+    <ClCompile Include="UIClass.cpp" />
     <ClCompile Include="U_Therapy.cpp" />
     <ClCompile Include="X_Therapy.cpp" />
   </ItemGroup>

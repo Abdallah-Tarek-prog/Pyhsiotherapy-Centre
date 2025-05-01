@@ -1,6 +1,5 @@
 #pragma once
 #include "Treatment.h"
-#include "Scheduler.h"
 
 class E_Therapy : public Treatment
 {

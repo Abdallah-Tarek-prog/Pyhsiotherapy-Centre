@@ -1,5 +1,5 @@
 #include "X_Therapy.h"
-
+#include "Scheduler.h"
 
 bool X_Therapy::canAssign(Lists& lists)
 {
