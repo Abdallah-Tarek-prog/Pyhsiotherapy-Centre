@@ -28,8 +28,9 @@ public:
 			int NewPT = temp->getItem(_pri)->getPT();
 			NewPT = NewPT + 1 + rand() % (2 * NewPT);
 			enqueue(temp->getItem(_pri), -1 * NewPT);			//Priority Negated
+			int newRescheduled = temp->getItem(_pri)->getRescheduled();
 			delete temp;
-			return temp->getItem(_pri)->getRescheduled() == 1; // If 0 then this is the first time for this patient to reschedule.
+			return newRescheduled == 1; // If 0 then this is the first time for this patient to reschedule.
 		}
 
 		int i = 1;
@@ -52,7 +53,7 @@ public:
 		NewPT = NewPT + 1 + rand() % (2 * NewPT);
 		enqueue(current->getItem(_pri), -1 * NewPT);			//Priority Negated
 		delete current;
-		return  newRescheduled == 1; // If 0 then this is the first time for this patient to reschedule.
+		return newRescheduled == 1; // If 0 then this is the first time for this patient to reschedule.
 
 
 		// Reschedule implementation isn't the most Optimized 
