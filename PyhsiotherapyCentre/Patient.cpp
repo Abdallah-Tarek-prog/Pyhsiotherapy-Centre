@@ -115,12 +115,12 @@ void Patient::setCancelled(bool cancelled) {
     Cancelled = cancelled;
 }
 
-bool Patient::isRescheduled() const {
+int Patient::getRescheduled() const {
     return Rescheduled;
 }
 
-void Patient::setRescheduled(bool rescheduled) {
-    Rescheduled = rescheduled;
+void Patient::incRescheduled() {
+    Rescheduled++;
 }
 
 std::ostream& operator<<(std::ostream& out, Patient& p) {

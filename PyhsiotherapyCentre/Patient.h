@@ -16,7 +16,7 @@ private:
     int TT; // Treatment Time
 
     bool Cancelled;
-    bool Rescheduled;
+    int Rescheduled;
 
     static int IDGenerator;
     LinkedQueue<Treatment*> Treatments;
@@ -50,8 +50,8 @@ public:
     void setTT(int tt);
     bool isCancelled() const;
     void setCancelled(bool cancelled);
-    bool isRescheduled() const;
-    void setRescheduled(bool rescheduled);
+    int getRescheduled() const;
+    void incRescheduled();
 
     friend std::ostream& operator<<(std::ostream& out, Patient& p);
 };

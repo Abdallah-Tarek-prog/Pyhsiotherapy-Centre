@@ -340,27 +340,30 @@ class Scheduler
           if (p->getState() == Patient::Late) {
               int penalty = (p->getVT() - p->getPT()) / 2;
               lists.E_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+	            p->setState(Patient::Wait);
               return;
           }
-
+          p->setState(Patient::Wait);
           lists.E_WaitingList.enqueue(p);
       }
       void AddToWait_U(Patient* p) {
           if (p->getState() == Patient::Late) {
               int penalty = (p->getVT() - p->getPT()) / 2;
               lists.U_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+              p->setState(Patient::Wait);
               return;
           }
-
+          p->setState(Patient::Wait);
           lists.U_WaitingList.enqueue(p);
       }
       void AddToWait_X(Patient* p) {
           if (p->getState() == Patient::Late) {
               int penalty = (p->getVT() - p->getPT()) / 2;
               lists.X_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+              p->setState(Patient::Wait);
               return;
           }
-
+          p->setState(Patient::Wait);
           lists.X_WaitingList.enqueue(p);
       }
 
@@ -384,6 +387,7 @@ class Scheduler
               eTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + eTreatment->GetDuration()));
+              patient->setState(Patient::Serv);
           }
       }
 
@@ -407,6 +411,7 @@ class Scheduler
               uTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + uTreatment->GetDuration()));
+              patient->setState(Patient::Serv);
           }
       }
 
@@ -436,6 +441,7 @@ class Scheduler
               xTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + xTreatment->GetDuration()));
+              patient->setState(Patient::Serv);
           }
       }
 
@@ -531,7 +537,7 @@ class Scheduler
                         Outfile << "T    ";
                     else Outfile << "F     ";
 
-                    if (pat->isRescheduled())
+                    if (pat->getRescheduled() > 0)
                         Outfile << "T    ";
                     else Outfile << "F     ";
                     Outfile << endl;
