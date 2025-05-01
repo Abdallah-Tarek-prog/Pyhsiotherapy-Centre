@@ -315,6 +315,21 @@ class Scheduler
                     {
                         pat->setState(Patient::Finished);
                         pat->setCancelled(true);
+                        // Handling the Times of the cancelled patient
+                        pat->setFT(timeStep);
+                        pat->setWT(timeStep-pat->getTT());
+                        // Treatment Time should be as it is 
+                        if(pat->getPType()=='R')
+                        {
+                            stat.recoveringTotalWaitingTime += pat->getWT();
+                            stat.recoveringTotalTreatmentTime += pat->getTT();
+                        }
+                        else if(pat->getPType()=='N')
+                        {
+                            stat.normalTotalWaitingTime += pat->getWT();
+                            stat.normalTotalTreatmentTime += pat->getTT();
+                        }
+
                         stat.numberOfCancel++;
                         lists.finishedList.push(pat);
                     }
