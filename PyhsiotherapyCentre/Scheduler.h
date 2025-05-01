@@ -242,7 +242,7 @@ class Scheduler
                         break;
                     case 'X':
                     {
-                        XResource* xRes = (XResource*)assignedResource; // FIXME I don't like this, Eman/Marwa will hate it.
+                        XResource* xRes = (XResource*)assignedResource;
                         if (xRes->getCount() == xRes->getCapacity()) // if the room was removed add it to the available list
                         {
                             lists.X_Rooms.enqueue(xRes);
@@ -296,8 +296,8 @@ class Scheduler
                 if (ProbResch < PResc) {
                     int ranNum = rand();
                     ranNum %= lists.earlyList.getCount();
-                    lists.earlyList.Reschedule(ranNum);
-                    stat.numberOfReschedule++;
+                    if(lists.earlyList.Reschedule(ranNum))
+                        stat.numberOfReschedule++;
                 }
             }
         }
@@ -522,20 +522,20 @@ class Scheduler
             else
             {
                 Patient* pat;
-                Outfile << "PID PType PT VT FT WT TT Cancel Resc\n";
+                Outfile << "PID PType PT\tVT\tFT\tWT\tTT\tCancel Resc\n";
                 while (lists.finishedList.pop(pat))
                 {
                     Outfile << "P" << pat->getID() << "  "
-                        << "PType" << pat->getPType() << "  "
-                        << pat->getPT() << "  "
-                        << pat->getVT() << "  "
-                        << pat->getFT() << "   "
-                        << pat->getWT() << "   "
-                        << pat->getTT() << "   ";
+                        << pat->getPType() << "     "
+                        << pat->getPT() << "\t"
+                        << pat->getVT() << "\t"
+                        << pat->getFT() << "\t"
+                        << pat->getWT() << "\t"
+                        << pat->getTT() << "\t";
 
                     if (pat->isCancelled())
-                        Outfile << "T    ";
-                    else Outfile << "F     ";
+                        Outfile << "T      ";
+                    else Outfile << "F      ";
 
                     if (pat->getRescheduled() > 0)
                         Outfile << "T    ";
@@ -544,6 +544,13 @@ class Scheduler
                 }
                 double TotalWaitingTime = stat.normalTotalWaitingTime + stat.recoveringTotalWaitingTime;
                 double TotalTreatmentTime = stat.normalTotalTreatmentTime + stat.recoveringTotalTreatmentTime;
+                double AvgLatePenalty = 0;
+                if ((PNum-stat.numberOfEarly) > 0)
+                {
+                    AvgLatePenalty = (double)(stat.totalLatePenalty)/(PNum-stat.numberOfEarly);
+                }
+                
+                
 
                 Outfile << "Total number of timesteps = " << timeStep << endl // Considering timestep is the last one
                     << "Total number of all, N, and R patients = " << PNum << " , " << stat.normalPatientNum << " , " << stat.recoveringPatientNum << endl
@@ -553,7 +560,7 @@ class Scheduler
                     << "Percentage of patients of an accepted rescheduling(%) = " << (double)stat.numberOfReschedule * 100 / PNum << " %\n"
                     << "Percentage of early patients(%) = " << (double)stat.numberOfEarly * 100 / PNum<<" %\n"
                     <<"Percentage of late patients (%) = " <<(double)(PNum-stat.numberOfEarly)*100/PNum << " %\n"
-                    <<"Average late penalty = "<<(double)(stat.totalLatePenalty)/(PNum-stat.numberOfEarly)<<"timestep(s)";
+                    <<"Average late penalty = "<<AvgLatePenalty<<" timestep(s)";
             }
         }
 };
