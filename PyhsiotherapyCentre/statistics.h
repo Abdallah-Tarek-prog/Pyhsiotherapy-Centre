@@ -14,6 +14,7 @@ struct statistics
 	int numberOfReschedule;
 
 	int numberOfEarly;
+	int numberOfLate;
 	int totalLatePenalty;
 
 };

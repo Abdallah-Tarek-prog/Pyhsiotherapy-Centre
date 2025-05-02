@@ -148,6 +148,7 @@ class Scheduler
            stat.numberOfReschedule=0;
 
             stat.numberOfEarly=0;
+            stat.numberOfLate=0;
             stat.totalLatePenalty=0;
                 
         }
@@ -181,10 +182,22 @@ class Scheduler
                         topPatient->setState(Patient::Late);
                         stat.totalLatePenalty += penalty;
                         lists.lateList.enqueue(topPatient, -(topPatient->getVT() + penalty));
-                    }else{
+                        stat.numberOfLate++;
+                        topPatient->setWT(-timeStep);
+                    }
+                    else if(topPatient->getVT() < topPatient->getPT()){
                         topPatient->setState(Patient::Early);
                         lists.earlyList.enqueue(topPatient, -(topPatient->getPT()));
                         stat.numberOfEarly++;
+                        topPatient->setWT(-timeStep);
+                    }
+                    else{
+                        if (topPatient->getPType() == 'R') HandleRP(topPatient);
+                        Treatment* t;
+                        if (topPatient->getCurrentTreatment(t)) {
+                            t->MoveToWait(this, topPatient);
+                        }
+                        topPatient->setWT(-timeStep);
                     }
                 }
                 else {
@@ -269,7 +282,7 @@ class Scheduler
                 {
                     p->setFT(timeStep);
                     p->setState(Patient::Finished);
-                    p->setWT(timeStep - p->getTT());
+                    p->setWT(timeStep - p->getTT() + p->getWT());
                     if (p->getPType() == 'R')
                     {
                         stat.recoveringTotalWaitingTime += p->getWT();
@@ -317,7 +330,7 @@ class Scheduler
                         pat->setCancelled(true);
                         // Handling the Times of the cancelled patient
                         pat->setFT(timeStep);
-                        pat->setWT(timeStep-pat->getTT());
+                        pat->setWT(timeStep - pat->getTT() + pat->getWT());
                         // Treatment Time should be as it is 
                         if(pat->getPType()=='R')
                         {
@@ -639,7 +652,7 @@ class Scheduler
                   << "Percentage of early patients(%) = "
                   << (double)stat.numberOfEarly * 100 / PNum << " %\n"
                   << "Percentage of late patients (%) = "
-                  << (double)(PNum - stat.numberOfEarly) * 100 / PNum << " %\n"
+                  << (double)(stat.numberOfLate) * 100 / PNum << " %\n"
                   << "Average late penalty = " << AvgLatePenalty << " timestep(s)";
           }
       }
