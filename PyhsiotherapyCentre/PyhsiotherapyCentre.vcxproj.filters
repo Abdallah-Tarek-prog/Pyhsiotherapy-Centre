@@ -36,6 +36,15 @@
     <ClCompile Include="X_Therapy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Patient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UEResource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIClass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Patient.h">
@@ -101,5 +110,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
+    <Text Include="Out.txt" />
   </ItemGroup>
 </Project>

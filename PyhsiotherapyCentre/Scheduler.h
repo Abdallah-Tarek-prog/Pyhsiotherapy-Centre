@@ -166,15 +166,6 @@ class Scheduler
                 if (topPatient->getVT() == timeStep) {
                     Patient* temp;
                     lists.allPatientsList.dequeue(temp);
-                    
-
-                    // Will handle this in the simulateTimestep function (as early patients)
-                    //
-                    // if(topPatient->getVT() == topPatient->getPT()){
-                    //     RandomWaiting()->enqueue(topPatient);
-                    //     topPatient->setState(Patient::Wait);
-                    //     continue;
-                    // }
 
 
                     if(topPatient->getVT() > topPatient->getPT()){
@@ -227,7 +218,7 @@ class Scheduler
                 if (p->getPType() == 'R') HandleRP(p);
                 Treatment* t;
                 if (p->getCurrentTreatment(t)) {
-                    t->MoveToWait(this, p);    // TODO I need to be able to tell it that the patient came from the late list so that hes put in the waiting list according to PT + Penalty. For now, I will rely on the state.
+                    t->MoveToWait(this, p);   
                 }
                 lists.lateList.dequeue(p, _);
             }
@@ -539,58 +530,7 @@ class Scheduler
             else
                 UI.print("Silent Mode, Simulation ends, Output file created\n");
         }
-       /* void PrintOutputFile(UIClass& UI)
-        {
-            string filename = UI.getFileName("Output");
-            ofstream Outfile(filename+".txt");
-            if (!Outfile)
-            {
-                cout << "Error occured Output File wasn't created\n";
-            }
-            else
-            {
-                Patient* pat;
-                Outfile <<"PID      PType      PT     VT     FT    WT    TT      Cancel      Resc\n";
-                while (lists.finishedList.pop(pat))
-                {
-                    Outfile << "P" << pat->getID() << "\t"
-                        << pat->getPType() << "\t\t"
-                        << pat->getPT() << "\t"
-                        << pat->getVT() << "\t"
-                        << pat->getFT() << "\t"
-                        << pat->getWT() << "\t"
-                        << pat->getTT() << "\t";
-
-                    if (pat->isCancelled())
-                        Outfile << "T\t\t";
-                    else Outfile << "F\t\t";
-
-                    if (pat->getRescheduled() > 0)
-                        Outfile << "T    ";
-                    else Outfile << "F     ";
-                    Outfile << endl;
-                }
-                double TotalWaitingTime = stat.normalTotalWaitingTime + stat.recoveringTotalWaitingTime;
-                double TotalTreatmentTime = stat.normalTotalTreatmentTime + stat.recoveringTotalTreatmentTime;
-                double AvgLatePenalty = 0;
-                if ((PNum-stat.numberOfEarly) > 0)
-                {
-                    AvgLatePenalty = (double)(stat.totalLatePenalty)/(PNum-stat.numberOfEarly);
-                }
-                
-                
-
-                Outfile << "Total number of timesteps = " << timeStep << endl // Considering timestep is the last one
-                    << "Total number of all, N, and R patients = " << PNum << " , " << stat.normalPatientNum << " , " << stat.recoveringPatientNum << endl
-                    << "Average total waiting time for all, N, and R patients = " << fixed << setprecision(2) << TotalWaitingTime / PNum << " , " << (double)stat.normalTotalWaitingTime / stat.normalPatientNum << " , " << (double)stat.recoveringTotalWaitingTime / stat.recoveringPatientNum << endl
-                    << "Average total treatment time for all, N, and R patients = " << TotalTreatmentTime / PNum << " , " << (double)stat.normalTotalTreatmentTime / stat.normalPatientNum << " , " << (double)stat.recoveringTotalTreatmentTime / stat.recoveringPatientNum << endl
-                    << "Percentage of patients of an accepted cancellation (%) = " << (double)stat.numberOfCancel * 100 / PNum << " %\n"
-                    << "Percentage of patients of an accepted rescheduling(%) = " << (double)stat.numberOfReschedule * 100 / PNum << " %\n"
-                    << "Percentage of early patients(%) = " << (double)stat.numberOfEarly * 100 / PNum<<" %\n"
-                    <<"Percentage of late patients (%) = " <<(double)(PNum-stat.numberOfEarly)*100/PNum << " %\n"
-                    <<"Average late penalty = "<<AvgLatePenalty<<" timestep(s)";
-            }
-        }*/
+      
       void PrintOutputFile(UIClass& UI)
       {
           string filename = UI.getFileName("Output");
