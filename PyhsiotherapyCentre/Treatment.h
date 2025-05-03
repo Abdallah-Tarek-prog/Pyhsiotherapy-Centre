@@ -40,6 +40,13 @@ public:
 	{
 		return duration;
 	}
+
+	void SetDuration(int val) 
+	{
+		duration = val;
+	}
+
+
 	UEResource* GetAssResource() const
 	{
 		return AssResource;

@@ -1,6 +1,7 @@
 #pragma once
 #include "priNode.h"
-
+#include <iostream>
+using namespace std;
 
 
 //This class impelements the priority queue as a sorted list (Linked List)

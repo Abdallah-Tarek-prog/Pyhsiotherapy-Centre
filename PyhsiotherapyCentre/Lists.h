@@ -11,6 +11,8 @@
 #include "XResource.h"
 #include "Treatment.h"
 
+#include "InTreatmentList.h"
+
 struct Lists {
     LinkedQueue<Patient*> allPatientsList;
     ArrayStack<Patient*> finishedList;
@@ -26,5 +28,10 @@ struct Lists {
     LinkedQueue<UEResource*> E_Devices;
     LinkedQueue<XResource*> X_Rooms;
 
-    priQueue<Patient*> inTreatmentList;
+    InTreatmentList inTreatmentList;
+
+    LinkedQueue<Patient*> U_interruptedPatients;
+    LinkedQueue<Patient*> E_interruptedPatients;
+
+    LinkedQueue<UEResource*> FailedDevices;
 };

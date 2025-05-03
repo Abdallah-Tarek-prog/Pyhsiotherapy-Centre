@@ -17,5 +17,8 @@ struct statistics
 	int numberOfLate;
 	int totalLatePenalty;
 
+	int numberOfBusyFail;
+	int numberOfBusy;
+
 };
 

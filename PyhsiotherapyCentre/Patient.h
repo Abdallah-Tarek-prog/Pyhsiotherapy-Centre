@@ -5,7 +5,7 @@
 
 class Patient {
 public:
-    enum pState { Early, Late, Idle, Wait, Serv, Finished };
+    enum pState { Early, Late, Idle, Wait, Serv, Finished, Interrupted};
 
 private:
     int ID;
