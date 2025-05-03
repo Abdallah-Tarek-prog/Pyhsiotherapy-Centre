@@ -25,6 +25,7 @@ class Scheduler
         int PCancel;
         int PResc;
         int PFreeFail;
+        int PBusyFail;
         bool Silent;
 
         // helper functions for input reading
@@ -127,6 +128,7 @@ class Scheduler
 
             inputFile >> PCancel >> PResc ;
             inputFile >> PFreeFail;
+            inputFile >> PBusyFail;
 
             populatePatientList(inputFile);
 
@@ -160,6 +162,11 @@ class Scheduler
             stat.totalLatePenalty=0;
 
             stat.numberOfFreeFailedDevices = 0;
+                
+
+            stat.numberOfBusyFail = 0;
+            stat.numberOfBusy = 0;
+
                 
         }
 
@@ -351,17 +358,62 @@ class Scheduler
             }
         }
 
+        void FailSimulation() {
+            if (lists.inTreatmentList.getCount())
+            {
+                int ProbCancel = rand() % 101;
+
+                if (ProbCancel < PBusyFail) {
+                    int ranNum = rand();
+                    Patient* pat;
+                    ranNum %= lists.inTreatmentList.getCount();
+
+                    if (lists.inTreatmentList.FailDevice(ranNum, pat))
+                    {
+                        pat->setState(Patient::Interrupted);
+                        
+                        Treatment* t;
+                        pat->getCurrentTreatment(t);
+
+                        // Updated the treatment duration due to the fail
+                        t->SetDuration(t->GetST() + t->GetDuration() - timeStep - 1);
+
+                        // Moving the patient in the treatmewnt to the interrupted list
+                        if (t->GetType() == 'U') 
+                            lists.U_interruptedPatients.enqueue(pat);
+                        else 
+                            lists.E_interruptedPatients.enqueue(pat);
+
+                        // Moving the broken device to the failed list
+                        lists.FailedDevices.enqueue(t->GetAssResource());
+                        t->setAssResource(nullptr);
+
+                        stat.numberOfBusyFail++;
+                    }
+                }
+            }
+        }
+
       void simulateTimestep()
        {
         
             timeStep += 1;
             checkout(); // Returning back the devices after finishing should be done at first !!! 
+            HandleFailedList();
             MoveFromAll();
             ReschSimulation();  // For handling rescheduling in early list
             dispatch();
             CancSimulation();   // For handling cancelling 
-            Assign_E();     
-            Assign_U();
+            FailSimulation();
+
+            // Calling assign first on IP patients because they have higher priority 
+            Assign_E(lists.E_interruptedPatients);
+            Assign_U(lists.U_interruptedPatients);
+
+            // Continuing with the normal procedure 
+            Assign_E(lists.E_WaitingList);     
+            Assign_U(lists.U_WaitingList);
+
             Assign_X();
         
        }
@@ -397,8 +449,11 @@ class Scheduler
           lists.X_WaitingList.enqueue(p);
       }
 
-      void Assign_E()
-      {
+      
+
+      void Assign_E(LinkedQueue<Patient*>& TargetList) {
+        
+     
           UEResource* temp; int value;
           while (lists.E_Maintenance.peek(temp,value))
           {
@@ -413,9 +468,10 @@ class Scheduler
 
           }
 
-          while (!lists.E_WaitingList.isEmpty()) {
+          while (!TargetList.isEmpty()) {
+          
               Patient* patient;
-              lists.E_WaitingList.peek(patient);
+              TargetList.peek(patient);
 
               Treatment* eTreatment;
               patient->getCurrentTreatment(eTreatment);
@@ -423,6 +479,7 @@ class Scheduler
               if (!eTreatment->canAssign(lists))
                   return;
 
+             
 
               UEResource* resource;
               lists.E_Devices.dequeue(resource);
@@ -443,18 +500,22 @@ class Scheduler
                       lists.E_Devices.dequeue(resource);
               }
 
-              lists.E_WaitingList.dequeue(patient);
+              TargetList.dequeue(patient);
 
               eTreatment->setAssResource(resource);
               eTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + eTreatment->GetDuration()));
               patient->setState(Patient::Serv);
+
+              stat.numberOfBusy++;
           }
       }
 
-      void Assign_U() 
-      {
+      void Assign_U(LinkedQueue<Patient*>& TargetList) {
+
+          
+     
           UEResource* temp; int value;
           while (lists.U_Maintenance.peek(temp, value))
           {
@@ -469,9 +530,9 @@ class Scheduler
 
           }
 
-          while (!lists.U_WaitingList.isEmpty()) {
+          while (!TargetList.isEmpty()) {
               Patient* patient;
-              lists.U_WaitingList.peek(patient);
+              TargetList.peek(patient);
 
               Treatment* uTreatment;
               patient->getCurrentTreatment(uTreatment);
@@ -479,6 +540,7 @@ class Scheduler
               if (!uTreatment->canAssign(lists))
                   return;
 
+              
 
               UEResource* resource;
               lists.U_Devices.dequeue(resource);
@@ -498,12 +560,14 @@ class Scheduler
                       lists.U_Devices.dequeue(resource);
               }
 
-              lists.U_WaitingList.dequeue(patient);
+              TargetList.dequeue(patient);
               uTreatment->setAssResource(resource);
               uTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + uTreatment->GetDuration()));
               patient->setState(Patient::Serv);
+
+              stat.numberOfBusy++;
           }
       }
 
@@ -534,6 +598,17 @@ class Scheduler
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + xTreatment->GetDuration()));
               patient->setState(Patient::Serv);
+          }
+      }
+
+      void HandleFailedList() {
+          UEResource* res;
+          if (lists.FailedDevices.dequeue(res))
+          {
+              if (res->getType() == 'U')
+                  lists.U_Devices.enqueue(res);
+              else
+                  lists.E_Devices.enqueue(res);
           }
       }
 
@@ -669,6 +744,8 @@ class Scheduler
                   << "Percentage of late patients (%) = "
                   << (double)(stat.numberOfLate) * 100 / PNum << " %\n"
                   << "Average late penalty = " << AvgLatePenalty << " timestep(s)\n"
+                  << "Percentage of failed busy devices(%) = "
+                  << (double)stat.numberOfBusyFail * 100 / stat.numberOfBusy << " %\n"
                   << "Percentage of Free devices that failed (%) = " << PercentFreeFail*100 << " %\n";
           }
       }
