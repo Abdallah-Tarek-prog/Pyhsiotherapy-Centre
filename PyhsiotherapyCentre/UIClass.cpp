@@ -46,6 +46,14 @@ void UIClass::printLists(Lists& list, int timestep) const {
     list.lateList.print();
     std::cout << '\n';
 
+    std::cout << "================ Maintenance List ================\n";
+    std::cout << list.E_Maintenance.getCount() << " Electro device: ";
+    list.E_Maintenance.print();
+    std::cout << '\n';
+    std::cout << list.U_Maintenance.getCount() << " Ultra device: ";
+    list.U_Maintenance.print();
+    std::cout << '\n';
+
     std::cout << "================ Avail E-Devices ================\n";
     std::cout << list.E_Devices.getCount() << " Electro device: ";
     list.E_Devices.print();

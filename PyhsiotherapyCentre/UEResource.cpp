@@ -2,9 +2,11 @@
 
 int UEResource::IDGenerator = 0;
 
-UEResource::UEResource(char Type) {
+UEResource::UEResource(char Type,int MainTime) {
     this->Type = char(toupper(Type));
     ID = IDGenerator++;
+    this->MainTime = MainTime;
+    Freefailed = false;
     // We can make ID randomly generated afterwards
     // in that case IDGenerator won't express count of Resources
 }
@@ -15,6 +17,21 @@ int UEResource::getID() const {
 
 char UEResource::getType() const {
     return Type;
+}
+
+void UEResource::setFreeFailed()
+{
+    Freefailed = true;
+}
+
+bool UEResource::getFreeFailed()const
+{
+    return Freefailed;
+}
+
+int UEResource::getMainTime()const
+{
+    return MainTime;
 }
 
 std::ostream& operator<<(std::ostream& out, const UEResource& r) {

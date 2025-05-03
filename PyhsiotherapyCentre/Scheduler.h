@@ -21,8 +21,10 @@ class Scheduler
         int timeStep;
         Lists lists;
         int PNum; // Patients total Number
+        int UENum;  // For (E + U) devices number
         int PCancel;
         int PResc;
+        int PFreeFail;
         bool Silent;
 
         // helper functions for input reading
@@ -31,14 +33,19 @@ class Scheduler
             int EDevices, UDevices, XDevices;
 
             inputFile >> EDevices >> UDevices >> XDevices;
+            UENum = EDevices + UDevices;
+
+            int MainTime;   // Maintenance Time
 
             while (EDevices--) {
-                UEResource* newResource = new UEResource('E');
+                inputFile >> MainTime;
+                UEResource* newResource = new UEResource('E',MainTime);
                 lists.E_Devices.enqueue(newResource);
             }
 
             while (UDevices--) {
-                UEResource* newResource = new UEResource('U');
+                inputFile >> MainTime;
+                UEResource* newResource = new UEResource('U',MainTime);
                 lists.U_Devices.enqueue(newResource);
             }
 
@@ -118,7 +125,8 @@ class Scheduler
 
             populateResouceLists(inputFile);
 
-            inputFile >> PCancel >> PResc;
+            inputFile >> PCancel >> PResc ;
+            inputFile >> PFreeFail;
 
             populatePatientList(inputFile);
 
@@ -150,6 +158,8 @@ class Scheduler
             stat.numberOfEarly=0;
             stat.numberOfLate=0;
             stat.totalLatePenalty=0;
+
+            stat.numberOfFreeFailedDevices = 0;
                 
         }
 
@@ -387,7 +397,22 @@ class Scheduler
           lists.X_WaitingList.enqueue(p);
       }
 
-      void Assign_E() {
+      void Assign_E()
+      {
+          UEResource* temp; int value;
+          while (lists.E_Maintenance.peek(temp,value))
+          {
+              value *= -1;
+              if (value <= timeStep)     // if maintenance time ended , return the device to the avilable list
+              {
+                  lists.E_Maintenance.dequeue(temp, value);
+                  lists.E_Devices.enqueue(temp);
+              }
+              else
+                  break;
+
+          }
+
           while (!lists.E_WaitingList.isEmpty()) {
               Patient* patient;
               lists.E_WaitingList.peek(patient);
@@ -398,10 +423,27 @@ class Scheduler
               if (!eTreatment->canAssign(lists))
                   return;
 
-              lists.E_WaitingList.dequeue(patient);
 
               UEResource* resource;
               lists.E_Devices.dequeue(resource);
+
+              int Pfail = rand() % 101;
+              if (Pfail < PFreeFail)
+              {
+                  lists.E_Maintenance.enqueue(resource,-(timeStep+resource->getMainTime()));
+                  
+                  if (!resource->getFreeFailed()) {
+                      resource->setFreeFailed();
+                      stat.numberOfFreeFailedDevices++;
+                  }
+
+                  if (!eTreatment->canAssign(lists))
+                      return;
+                 else 
+                      lists.E_Devices.dequeue(resource);
+              }
+
+              lists.E_WaitingList.dequeue(patient);
 
               eTreatment->setAssResource(resource);
               eTreatment->setST(timeStep);
@@ -411,7 +453,22 @@ class Scheduler
           }
       }
 
-      void Assign_U() {
+      void Assign_U() 
+      {
+          UEResource* temp; int value;
+          while (lists.U_Maintenance.peek(temp, value))
+          {
+              value *= -1;
+              if (value <= timeStep)    // if maintenance time ended , return the device to the avilable list
+              {
+                  lists.U_Maintenance.dequeue(temp, value);
+                  lists.U_Devices.enqueue(temp);
+              }
+              else
+                  break;
+
+          }
+
           while (!lists.U_WaitingList.isEmpty()) {
               Patient* patient;
               lists.U_WaitingList.peek(patient);
@@ -422,11 +479,26 @@ class Scheduler
               if (!uTreatment->canAssign(lists))
                   return;
 
-              lists.U_WaitingList.dequeue(patient);
 
               UEResource* resource;
               lists.U_Devices.dequeue(resource);
 
+              int Pfail = rand() % 101;
+              if (Pfail < PFreeFail)
+              {
+                  lists.U_Maintenance.enqueue(resource, -(timeStep + resource->getMainTime()));
+                  if (!resource->getFreeFailed()) {
+                      resource->setFreeFailed();
+                      stat.numberOfFreeFailedDevices++;
+                  }
+
+                  if (!uTreatment->canAssign(lists))
+                      return;
+                else 
+                      lists.U_Devices.dequeue(resource);
+              }
+
+              lists.U_WaitingList.dequeue(patient);
               uTreatment->setAssResource(resource);
               uTreatment->setST(timeStep);
 
@@ -534,10 +606,11 @@ class Scheduler
       void PrintOutputFile(UIClass& UI)
       {
           string filename = UI.getFileName("Output");
-          ofstream Outfile(filename + ".txt");
+          ofstream Outfile(filename );
           if (!Outfile)
           {
               cout << "Error occured Output File wasn't created\n";
+              exit(1);
           }
           else
           {
@@ -577,6 +650,8 @@ class Scheduler
               double AvgTotalWaitTimeN = stat.normalPatientNum > 0? (double)stat.normalTotalWaitingTime / stat.normalPatientNum: 0;
               double AvgTotalTreatmentTimeR = stat.recoveringPatientNum > 0? (double)stat.recoveringTotalTreatmentTime / stat.recoveringPatientNum: 0;
               double AvgTotalWaitTimeR = stat.recoveringPatientNum > 0? (double)stat.recoveringTotalWaitingTime / stat.recoveringPatientNum: 0;
+              double PercentFreeFail = UENum > 0 ? ((double)stat.numberOfFreeFailedDevices / UENum) : 0;
+
               Outfile << "Total number of timesteps = " << timeStep << endl
                   << "Total number of all, N, and R patients = " << PNum << " , " << stat.normalPatientNum << " , " << stat.recoveringPatientNum << endl
                   << "Average total waiting time for all, N, and R patients = " << fixed << setprecision(2)
@@ -587,13 +662,14 @@ class Scheduler
                   << " , " << AvgTotalTreatmentTimeR << endl
                   << "Percentage of patients of an accepted cancellation (%) = "
                   << (double)stat.numberOfCancel * 100 / PNum << " %\n"
-                  << "Percentage of patients of an accepted rescheduling(%) = "
+                  << "Percentage of patients of an accepted rescheduling (%) = "
                   << (double)stat.numberOfReschedule * 100 / PNum << " %\n"
-                  << "Percentage of early patients(%) = "
+                  << "Percentage of early patients (%) = "
                   << (double)stat.numberOfEarly * 100 / PNum << " %\n"
                   << "Percentage of late patients (%) = "
                   << (double)(stat.numberOfLate) * 100 / PNum << " %\n"
-                  << "Average late penalty = " << AvgLatePenalty << " timestep(s)";
+                  << "Average late penalty = " << AvgLatePenalty << " timestep(s)\n"
+                  << "Percentage of Free devices that failed (%) = " << PercentFreeFail*100 << " %\n";
           }
       }
 };

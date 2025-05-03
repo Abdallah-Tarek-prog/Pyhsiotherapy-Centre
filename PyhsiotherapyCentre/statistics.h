@@ -17,5 +17,7 @@ struct statistics
 	int numberOfLate;
 	int totalLatePenalty;
 
+	//Bonus
+	int numberOfFreeFailedDevices;
 };
 
