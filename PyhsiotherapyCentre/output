@@ -1,0 +1,32 @@
+PID   PType     PT    VT    FT    WT    TT    Cancel    Resc    
+P4    R         31    25    445   183   237   F         F       
+P17   R         50    41    437   179   217   F         F       
+P5    R         34    25    433   202   206   F         T       
+P13   R         33    33    258   0     225   F         F       
+P9    R         34    30    248   4     214   T         F       
+P1    R         20    19    238   1     218   F         F       
+P8    N         39    29    96    10    57    F         F       
+P18   R         32    44    75    24    7     T         F       
+P20   R         40    48    69    4     17    F         F       
+P19   N         46    46    56    0     10    F         F       
+P14   N         30    36    54    3     15    F         F       
+P15   R         40    38    53    15    0     T         T       
+P10   N         22    30    53    4     19    F         F       
+P16   N         45    40    51    5     6     F         F       
+P7    N         30    29    50    1     20    F         F       
+P12   N         20    32    47    6     9     F         F       
+P6    N         33    27    44    6     11    F         F       
+P11   R         35    31    43    4     8     T         F       
+P3    R         24    22    43    2     19    F         T       
+P2    N         23    21    42    2     19    F         F       
+Total number of timesteps = 445
+Total number of all, N, and R patients = 20 , 9 , 11
+Average total waiting time for all, N, and R patients = 32.75 , 4.11 , 56.18
+Average total treatment time for all, N, and R patients = 76.70 , 18.44 , 124.36
+Percentage of patients of an accepted cancellation (%) = 20.00 %
+Percentage of patients of an accepted rescheduling (%) = 15.00 %
+Percentage of early patients (%) = 65.00 %
+Percentage of late patients (%) = 25.00 %
+Average late penalty = 3.29 timestep(s)
+Percentage of failed busy devices(%) = 35.71 %
+Percentage of Free devices that failed (%) = 50.00 %

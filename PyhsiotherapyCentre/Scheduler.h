@@ -470,52 +470,60 @@ class Scheduler
         }
 
         void FailSimulation() {
-            if (lists.inTreatmentList.getCount())
-            {
-                int ProbCancel = rand() % 101;
 
-                if (ProbCancel < PBusyFail) {
-                    int ranNum = rand();
-                    Patient* pat;
-                    ranNum %= lists.inTreatmentList.getCount();
+                if (lists.inTreatmentList.getCount())
+                {
+                    int ProbCancel = rand() % 101;
 
-                    if (lists.inTreatmentList.FailDevice(ranNum, pat))
-                    {
-                        pat->setState(Patient::Interrupted);
-                        
-                        Treatment* t;
-                        pat->getCurrentTreatment(t);
+                    if (ProbCancel < PBusyFail) {
+                     
+                        int max_count = 3;
 
-                        pat->setTT(pat->getTT() + timeStep - t->GetST());
-                        // Updated the treatment duration due to the fail
-                        t->SetDuration(t->GetST() + t->GetDuration() - timeStep);
+                        while (max_count--) {
+                            Patient* pat;
+                            int ranNum = rand();
+                            ranNum %= lists.inTreatmentList.getCount();
 
-                        // Moving the patient in the treatmewnt to the interrupted list
-                        if (t->GetType() == 'U') 
-                            lists.U_interruptedPatients.enqueue(pat);
-                        else 
-                            lists.E_interruptedPatients.enqueue(pat);
+                            if (lists.inTreatmentList.FailDevice(ranNum, pat))
+                            {
+                                pat->setState(Patient::Interrupted);
 
-                        UEResource* res = t->GetAssResource();
+                                Treatment* t;
+                                pat->getCurrentTreatment(t);
 
-                        if (!res->getBusyFailed()) {
-                            res->setBusyFailed();
-                            stat.numberOfBusyFail++;
-                            cout << res->getID() << '\n';
+                                pat->setTT(pat->getTT() + timeStep - t->GetST());
+                                // Updated the treatment duration due to the fail
+                                t->SetDuration(t->GetST() + t->GetDuration() - timeStep);
+
+                                // Moving the patient in the treatmewnt to the interrupted list
+                                if (t->GetType() == 'U')
+                                    lists.U_interruptedPatients.enqueue(pat);
+                                else
+                                    lists.E_interruptedPatients.enqueue(pat);
+
+                                UEResource* res = t->GetAssResource();
+
+                                if (!res->getBusyFailed()) {
+                                    res->setBusyFailed();
+                                    stat.numberOfBusyFail++;
+                                }
+
+                                // Moving the broken device to the failed list
+                                if (t->GetType() == 'U') {
+                                    lists.U_Maintenance.enqueue(res, -(timeStep + res->getMainTime()));
+                                }
+                                else {
+                                    lists.E_Maintenance.enqueue(res, -(timeStep + res->getMainTime()));
+                                }
+
+                                t->setAssResource(nullptr);
+                                break;
+                            }
                         }
-
-                        // Moving the broken device to the failed list
-                        if (t->GetType() == 'U') {
-                            lists.U_Maintenance.enqueue(res, -(timeStep + res->getMainTime()));
-                        }
-                        else {
-                            lists.E_Maintenance.enqueue(res, -(timeStep + res->getMainTime()));
-                        }
-
-                        t->setAssResource(nullptr);
+                      
                     }
                 }
-            }
+         
         }
 
       void simulateTimestep()
