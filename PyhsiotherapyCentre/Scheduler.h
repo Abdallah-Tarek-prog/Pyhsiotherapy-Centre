@@ -280,8 +280,10 @@ class Scheduler
             while(lists.inTreatmentList.peek(p, pri)) {
                 Treatment* t;
                 p->getCurrentTreatment(t);
-                int leaveTime = t->GetST() + t->GetDuration(); // I assume the priority is the same thing as this.
-                //int leaveTime = -pri;
+                
+                // int leaveTime = t->GetST() + t->GetDuration(); // I assume the priority is the same thing as this.
+                
+                int leaveTime = -pri;
                 if(leaveTime > timeStep) break;
                 UEResource * assignedResource = t->GetAssResource();
                 switch(assignedResource->getType())
@@ -396,32 +398,30 @@ class Scheduler
         void CancSimulation()
         {   
             // TODO Change this implementation
-            M2Queue* chosenList;
-            int randXWaitingList = rand() % 3; // 0-2
-            switch (randXWaitingList)
-            {
-            case 0:
-                chosenList = &lists.X_D_WaitingList;
-                break;
-            case 1:
-                chosenList = &lists.X_S_WaitingList;
-                break;
-            case 2:
-                chosenList = &lists.X_T_WaitingList;
-                break;
-            
-            default:
-                chosenList = &lists.X_T_WaitingList;
-                break;
+            // Union the three waiting lists into a temporary queue
+            M2Queue tempQueue;
+            Patient* patient;
+            // Union X_D_WaitingList
+            while (lists.X_D_WaitingList.dequeue(patient)) {
+                tempQueue.enqueue(patient);
             }
-            if (chosenList->getCount() != 0)
+            // Union X_S_WaitingList
+            while (lists.X_S_WaitingList.dequeue(patient)) {
+                tempQueue.enqueue(patient);
+            }
+            // Union X_T_WaitingList
+            while (lists.X_T_WaitingList.dequeue(patient)) {
+                tempQueue.enqueue(patient);
+            }
+            
+
+            if (tempQueue.getCount() != 0)
             {
                 int ProbCancel = rand() % 101;
                 if (ProbCancel < PCancel) {
-                    int ranNum = rand();
+                    int ranNum = rand() % tempQueue.getCount();
                     Patient* pat;
-                    ranNum %= chosenList->getCount();
-                    if (chosenList->Cancel(ranNum, pat))
+                    if (tempQueue.Cancel(ranNum, pat))
                     {
                         pat->setState(Patient::Finished);
                         pat->setCancelled(true);
@@ -445,6 +445,31 @@ class Scheduler
                     }
                 }
             }
+            
+            while (tempQueue.dequeue(patient))
+            {
+                Treatment* t;
+                patient->getCurrentTreatment(t);
+                ToolTreatment* tool;
+                ((X_Therapy*)t)->getCurrReqTool(tool);
+                switch (tool->getType())
+                {
+                case 'S':
+                    lists.X_S_WaitingList.enqueue(patient);
+                    break;
+                case 'D':
+                    lists.X_D_WaitingList.enqueue(patient);
+                    break;
+                case 'T':
+                    lists.X_T_WaitingList.enqueue(patient);
+                    break;
+                
+                default:
+                    break;
+                }
+            }
+            
+            
         }
 
         void FailSimulation() {
@@ -464,8 +489,9 @@ class Scheduler
                         Treatment* t;
                         pat->getCurrentTreatment(t);
 
+                        pat->setTT(pat->getTT() + timeStep - t->GetST());
                         // Updated the treatment duration due to the fail
-                        t->SetDuration(t->GetST() + t->GetDuration() - timeStep - 1);
+                        t->SetDuration(t->GetST() + t->GetDuration() - timeStep);
 
                         // Moving the patient in the treatmewnt to the interrupted list
                         if (t->GetType() == 'U') 
@@ -508,7 +534,7 @@ class Scheduler
             Assign_U(lists.U_interruptedPatients);
 
             // Continuing with the normal procedure 
-            Assign_E(lists.E_WaitingList);     
+            Assign_E(lists.E_WaitingList);
             Assign_U(lists.U_WaitingList);
 
             Assign_X();

@@ -27,7 +27,6 @@ public:
 	bool canAssign(Lists& lists) override;
 	void MoveToWait(Scheduler* sch, Patient* p)  override;
 	bool getCurrReqTool(ToolTreatment*&); // peek
-	void cycleReqTools(); // dequeue and enqueue
 	bool removeReqTool(); // dequeue and delete
 	void addReqTool(ToolTreatment *); // Used in input phase only.
 	void assignTool(GymTool*);

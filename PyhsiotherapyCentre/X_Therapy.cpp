@@ -78,12 +78,6 @@ bool X_Therapy::removeReqTool(){
 }
 
 
-void X_Therapy::cycleReqTools(){
-    if (X_Therapy::ToolsRequired.isEmpty()) return;
-    ToolTreatment* tool;
-    X_Therapy::ToolsRequired.dequeue(tool);
-    X_Therapy::ToolsRequired.enqueue(tool);
-}
 
 
 void X_Therapy::addReqTool(ToolTreatment* tool){
