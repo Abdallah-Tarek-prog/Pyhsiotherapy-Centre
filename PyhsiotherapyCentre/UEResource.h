@@ -9,6 +9,7 @@ protected:
     char Type; // Either 'E', 'U', or 'R'
     int MainTime;   // Maintenance Time
     bool Freefailed;
+    bool Busyfailed;
 
 public:
     UEResource(char Type,int MainTime=-1);
@@ -18,5 +19,7 @@ public:
     int getMainTime()const;
     void setFreeFailed();
     bool getFreeFailed()const;
+    void setBusyFailed();
+    bool getBusyFailed()const;
     friend std::ostream& operator<<(std::ostream& out, const UEResource& r);
 };

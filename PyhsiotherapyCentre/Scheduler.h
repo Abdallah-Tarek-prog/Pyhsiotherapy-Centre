@@ -196,9 +196,6 @@ class Scheduler
                 
 
             stat.numberOfBusyFail = 0;
-            stat.numberOfBusy = 0;
-
-                
         }
 
         ~Scheduler()
@@ -501,6 +498,12 @@ class Scheduler
 
                         UEResource* res = t->GetAssResource();
 
+                        if (!res->getBusyFailed()) {
+                            res->setBusyFailed();
+                            stat.numberOfBusyFail++;
+                            cout << res->getID() << '\n';
+                        }
+
                         // Moving the broken device to the failed list
                         if (t->GetType() == 'U') {
                             lists.U_Maintenance.enqueue(res, -(timeStep + res->getMainTime()));
@@ -510,8 +513,6 @@ class Scheduler
                         }
 
                         t->setAssResource(nullptr);
-
-                        stat.numberOfBusyFail++;
                     }
                 }
             }
@@ -647,8 +648,6 @@ class Scheduler
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + eTreatment->GetDuration()));
               patient->setState(Patient::Serv);
-
-              stat.numberOfBusy++;
           }
       }
 
@@ -705,8 +704,6 @@ class Scheduler
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + uTreatment->GetDuration()));
               patient->setState(Patient::Serv);
-
-              stat.numberOfBusy++;
           }
       }
 
@@ -974,6 +971,8 @@ class Scheduler
               double AvgTotalTreatmentTimeR = stat.recoveringPatientNum > 0? (double)stat.recoveringTotalTreatmentTime / stat.recoveringPatientNum: 0;
               double AvgTotalWaitTimeR = stat.recoveringPatientNum > 0? (double)stat.recoveringTotalWaitingTime / stat.recoveringPatientNum: 0;
               double PercentFreeFail = UENum > 0 ? ((double)stat.numberOfFreeFailedDevices / UENum) : 0;
+              double PercentBusyFail = UENum > 0 ? ((double)stat.numberOfBusyFail / UENum) : 0;
+
 
               Outfile << "Total number of timesteps = " << timeStep << endl
                   << "Total number of all, N, and R patients = " << PNum << " , " << stat.normalPatientNum << " , " << stat.recoveringPatientNum << endl
@@ -993,7 +992,7 @@ class Scheduler
                   << (double)(stat.numberOfLate) * 100 / PNum << " %\n"
                   << "Average late penalty = " << AvgLatePenalty << " timestep(s)\n"
                   << "Percentage of failed busy devices(%) = "
-                  << (double)stat.numberOfBusyFail * 100 / stat.numberOfBusy << " %\n"
+                  << PercentBusyFail*100 << " %\n"
                   << "Percentage of Free devices that failed (%) = " << PercentFreeFail*100 << " %\n";
           }
       }

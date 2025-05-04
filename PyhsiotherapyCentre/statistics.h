@@ -20,7 +20,6 @@ struct statistics
 	//Bonus
 	int numberOfFreeFailedDevices;
 	int numberOfBusyFail;
-	int numberOfBusy;
 
 };
 

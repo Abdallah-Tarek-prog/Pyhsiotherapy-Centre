@@ -7,6 +7,7 @@ UEResource::UEResource(char Type,int MainTime) {
     ID = IDGenerator++;
     this->MainTime = MainTime;
     Freefailed = false;
+    Busyfailed = false;
     // We can make ID randomly generated afterwards
     // in that case IDGenerator won't express count of Resources
 }
@@ -28,6 +29,17 @@ bool UEResource::getFreeFailed()const
 {
     return Freefailed;
 }
+
+void UEResource::setBusyFailed()
+{
+    Busyfailed = true;
+}
+
+bool UEResource::getBusyFailed()const
+{
+    return Busyfailed;
+}
+
 
 int UEResource::getMainTime()const
 {
