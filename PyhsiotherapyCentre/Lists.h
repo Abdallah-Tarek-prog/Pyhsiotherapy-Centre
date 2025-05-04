@@ -37,6 +37,4 @@ struct Lists {
 
     LinkedQueue<Patient*> U_interruptedPatients;
     LinkedQueue<Patient*> E_interruptedPatients;
-
-    LinkedQueue<UEResource*> FailedDevices;
 };

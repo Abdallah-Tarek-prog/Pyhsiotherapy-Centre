@@ -475,8 +475,16 @@ class Scheduler
                         else 
                             lists.E_interruptedPatients.enqueue(pat);
 
+                        UEResource* res = t->GetAssResource();
+
                         // Moving the broken device to the failed list
-                        lists.FailedDevices.enqueue(t->GetAssResource());
+                        if (t->GetType() == 'U') {
+                            lists.U_Maintenance.enqueue(res, -(timeStep + res->getMainTime()));
+                        }
+                        else {
+                            lists.E_Maintenance.enqueue(res, -(timeStep + res->getMainTime()));
+                        }
+
                         t->setAssResource(nullptr);
 
                         stat.numberOfBusyFail++;
@@ -490,7 +498,7 @@ class Scheduler
         
             timeStep += 1;
             checkout(); // Returning back the devices after finishing should be done at first !!! 
-            HandleFailedList();
+            CheckoutMaintenance();
             MoveFromAll();
             ReschSimulation();  // For handling rescheduling in early list
             dispatch();
@@ -576,22 +584,6 @@ class Scheduler
     }
 
       void Assign_E(LinkedQueue<Patient*>& TargetList) {
-        
-     
-          UEResource* temp; int value;
-          while (lists.E_Maintenance.peek(temp,value))
-          {
-              value *= -1;
-              if (value <= timeStep)     // if maintenance time ended , return the device to the avilable list
-              {
-                  lists.E_Maintenance.dequeue(temp, value);
-                  lists.E_Devices.enqueue(temp);
-              }
-              else
-                  break;
-
-          }
-
           while (!TargetList.isEmpty()) {
           
               Patient* patient;
@@ -637,23 +629,6 @@ class Scheduler
       }
 
       void Assign_U(LinkedQueue<Patient*>& TargetList) {
-
-          
-     
-          UEResource* temp; int value;
-          while (lists.U_Maintenance.peek(temp, value))
-          {
-              value *= -1;
-              if (value <= timeStep)    // if maintenance time ended , return the device to the avilable list
-              {
-                  lists.U_Maintenance.dequeue(temp, value);
-                  lists.U_Devices.enqueue(temp);
-              }
-              else
-                  break;
-
-          }
-
           while (!TargetList.isEmpty()) {
               Patient* patient;
               TargetList.peek(patient);
@@ -805,14 +780,32 @@ class Scheduler
         }
       }
 
-      void HandleFailedList() {
-          UEResource* res;
-          if (lists.FailedDevices.dequeue(res))
+      void CheckoutMaintenance() {
+          UEResource* temp; int value;
+          while (lists.U_Maintenance.peek(temp, value))
           {
-              if (res->getType() == 'U')
-                  lists.U_Devices.enqueue(res);
+              value *= -1;
+              if (value <= timeStep)    // if maintenance time ended , return the device to the avilable list
+              {
+                  lists.U_Maintenance.dequeue(temp, value);
+                  lists.U_Devices.enqueue(temp);
+              }
               else
-                  lists.E_Devices.enqueue(res);
+                  break;
+
+          }
+
+          while (lists.E_Maintenance.peek(temp, value))
+          {
+              value *= -1;
+              if (value <= timeStep)     // if maintenance time ended , return the device to the avilable list
+              {
+                  lists.E_Maintenance.dequeue(temp, value);
+                  lists.E_Devices.enqueue(temp);
+              }
+              else
+                  break;
+
           }
       }
 

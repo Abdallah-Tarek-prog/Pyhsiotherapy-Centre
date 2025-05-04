@@ -77,11 +77,6 @@ void UIClass::printLists(Lists& list, int timestep) const {
     list.X_Rooms.print();
     std::cout << '\n';
 
-    std::cout << "================ Failed Devices ================\n";
-    std::cout << list.FailedDevices.getCount() << " Failed Devices: ";
-    list.FailedDevices.print();
-    std::cout << '\n';
-
     std::cout << "================ In-treatment List ================\n";
     std::cout << list.inTreatmentList.getCount() << " patients: ";
     list.inTreatmentList.print();
