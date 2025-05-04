@@ -12,6 +12,7 @@
 #include "statistics.h"
 #include<iomanip>
 #include <iostream>
+#include <cassert>
 
 // This is Branch of the Bonus, Lets start working
 class Scheduler
@@ -30,7 +31,7 @@ class Scheduler
 
         // helper functions for input reading
         
-        void populateResouceLists(std::ifstream& inputFile) {
+        void populateResourceLists(std::ifstream& inputFile) {
             int EDevices, UDevices, XDevices;
 
             inputFile >> EDevices >> UDevices >> XDevices;
@@ -54,7 +55,22 @@ class Scheduler
                 int capacity;
                 inputFile >> capacity;
                 XResource* newResource = new XResource('R', capacity);
-
+                int ToolsTypeCount;
+                inputFile >> ToolsTypeCount;
+                for (int i = 0; i < ToolsTypeCount; i++)
+                {   
+                    char ToolType;
+                    int ToolCount;
+                    inputFile >> ToolType;
+                    inputFile >> ToolCount;
+                    for (int j = 0; j < ToolCount; j++)
+                    {
+                        GymTool * newTool = new GymTool(ToolType);
+                        newResource->enqueueTool(newTool);
+                    }
+                    
+                }
+                
                 lists.X_Rooms.enqueue(newResource);
             }
         }
@@ -83,27 +99,42 @@ class Scheduler
 
                     char treatmentType;
                 while (treatmentNumber--) {
-                    int treatmentDuration;
                     
-                    inputFile >> treatmentType >> treatmentDuration;
+                    inputFile >> treatmentType;
+                    
 
                     switch (treatmentType)
                     {
                     case 'U':
                     {
+                        int treatmentDuration;
+                        inputFile >> treatmentDuration;
                         U_Therapy* uTreatment = new U_Therapy(treatmentDuration);
                         newPatient->AddTreatment(uTreatment);
                         break;
                     }
                     case 'E':
                     {
+                        int treatmentDuration;
+                        inputFile >> treatmentDuration;
                         E_Therapy* eTreatment = new E_Therapy(treatmentDuration);
                         newPatient->AddTreatment(eTreatment);
                         break;
                     }
                     case 'X':
                     {
-                        X_Therapy* xTreatment = new X_Therapy(treatmentDuration);
+                        X_Therapy* xTreatment = new X_Therapy();
+                        int ToolTreatmentCount;
+                        inputFile >> ToolTreatmentCount;
+                        for (int i = 0; i < ToolTreatmentCount; i++)
+                        {
+                            char ToolTreatmentType;
+                            inputFile >> ToolTreatmentType;
+                            int ToolTreatmentDuration;
+                            inputFile >> ToolTreatmentDuration;
+                            ToolTreatment* newToolTreatment = new ToolTreatment(ToolTreatmentDuration, ToolTreatmentType);
+                            xTreatment->addReqTool(newToolTreatment);
+                        }
                         newPatient->AddTreatment(xTreatment);
                         break;
                     }
@@ -124,7 +155,7 @@ class Scheduler
                 return false;
             }
 
-            populateResouceLists(inputFile);
+            populateResourceLists(inputFile);
 
             inputFile >> PCancel >> PResc ;
             inputFile >> PFreeFail;
@@ -235,7 +266,7 @@ class Scheduler
                 if (p->getPType() == 'R') HandleRP(p);
                 Treatment* t;
                 if (p->getCurrentTreatment(t)) {
-                    t->MoveToWait(this, p);   
+                    t->MoveToWait(this, p);
                 }
                 lists.lateList.dequeue(p, _);
             }
@@ -257,31 +288,72 @@ class Scheduler
                 {
                     case 'E':
                         lists.E_Devices.enqueue(assignedResource);
+                        p->setTT(p->getTT() + timeStep - t->GetST());
+                        t->setAssResource(NULL); // For Saftey measures when Debugging
+
+                        p->RemoveTreatment();
+                        if (p->getPType() == 'R') HandleRP(p);
                         break;
                     case 'U':
                         lists.U_Devices.enqueue(assignedResource);
+                        p->setTT(p->getTT() + timeStep - t->GetST());
+                        t->setAssResource(NULL); // For Saftey measures when Debugging
+
+                        p->RemoveTreatment();
+                        if (p->getPType() == 'R') HandleRP(p);
+
                         break;
                     case 'R':
                     {
                         XResource* xRes = (XResource*)assignedResource;
+                        ((X_Therapy*)t)->removeReqTool();
+                        // Return GymTool back to room's resources
+                        GymTool* usedTool;
+                        ((X_Therapy*)t)->getAssignedTool(usedTool);
+                        ((X_Therapy*)t)->removeAssignedTool();
+                        xRes->enqueueTool(usedTool);
+                        p->setTT(p->getTT() + timeStep - t->GetST());
+                        t->setAssResource(NULL); // For Saftey measures when Debugging
+                         
+                        // OPTIONAL: If a patient still has a req tool which is available in the room the patient is in, then leave the patient inside the room.
+                        ToolTreatment* nextToolTreatment = nullptr;
+                        if (((X_Therapy*)t)->getCurrReqTool(nextToolTreatment))
+                        {
+                        if(xRes->isToolAvailable(nextToolTreatment->getType())){
+                            t->setAssResource(xRes);
+                            GymTool * tool;
+                            if (!xRes->dequeueTool(nextToolTreatment->getType(), tool))
+                            {
+                                throw std::runtime_error("This shouldn't happen.");
+                            }
+                            
+                            
+                            ((X_Therapy*)t)->assignTool(tool);
+                            t->setST(timeStep);
+                            break;
+                        }
+                        
+                        }
+
+
                         if (xRes->getCount() == xRes->getCapacity()) // if the room was removed add it to the available list
                         {
                             lists.X_Rooms.enqueue(xRes);
                         }
                         xRes->DeCount();  // Decrement its count
 
+                        
+                        ToolTreatment* reqTool;
+                        if(nextToolTreatment) break;
+                        p->RemoveTreatment();
+                        if (p->getPType() == 'R') HandleRP(p);
                         break;
                     }
                     default:
                         break;
                 }
                 
-                p->setTT(p->getTT() + timeStep - t->GetST());
-                t->setAssResource(NULL); // For Saftey measures when Debugging
-
-                p->RemoveTreatment();
-                if (p->getPType() == 'R') HandleRP(p);
-
+                
                 if(p->getCurrentTreatment(t))
                 {
                     t->MoveToWait(this, p);
@@ -324,15 +396,34 @@ class Scheduler
             }
         }
         void CancSimulation()
-        {
-            if (lists.X_WaitingList.getCount() != 0)
+        {   
+            // TODO Change this implementation if needed.
+            M2Queue* chosenList;
+            int randXWaitingList = rand() % 3; // 0-2
+            switch (randXWaitingList)
+            {
+            case 0:
+                chosenList = &lists.X_D_WaitingList;
+                break;
+            case 1:
+                chosenList = &lists.X_S_WaitingList;
+                break;
+            case 2:
+                chosenList = &lists.X_T_WaitingList;
+                break;
+            
+            default:
+                chosenList = &lists.X_T_WaitingList;
+                break;
+            }
+            if (chosenList->getCount() != 0)
             {
                 int ProbCancel = rand() % 101;
                 if (ProbCancel < PCancel) {
                     int ranNum = rand();
                     Patient* pat;
-                    ranNum %= lists.X_WaitingList.getCount();
-                    if (lists.X_WaitingList.Cancel(ranNum, pat))
+                    ranNum %= chosenList->getCount();
+                    if (chosenList->Cancel(ranNum, pat))
                     {
                         pat->setState(Patient::Finished);
                         pat->setCancelled(true);
@@ -438,18 +529,51 @@ class Scheduler
           p->setState(Patient::Wait);
           lists.U_WaitingList.enqueue(p);
       }
-      void AddToWait_X(Patient* p) {
-          if (p->getState() == Patient::Late) {
-              int penalty = (p->getVT() - p->getPT()) / 2;
-              lists.X_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
-              p->setState(Patient::Wait);
-              return;
-          }
-          p->setState(Patient::Wait);
-          lists.X_WaitingList.enqueue(p);
-      }
 
-      
+    // Split into three
+    //   void AddToWait_X(Patient* p) {
+    //       if (p->getState() == Patient::Late) {
+    //           int penalty = (p->getVT() - p->getPT()) / 2;
+    //           lists.X_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+    //           p->setState(Patient::Wait);
+    //           return;
+    //       }
+    //       p->setState(Patient::Wait);
+    //       lists.X_WaitingList.enqueue(p);
+    //   }
+
+    void AddToWait_D(Patient* p) {
+        if (p->getState() == Patient::Late) {
+            int penalty = (p->getVT() - p->getPT()) / 2;
+            lists.X_D_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+            p->setState(Patient::Wait);
+            return;
+        }
+        p->setState(Patient::Wait);
+        lists.X_D_WaitingList.enqueue(p);
+    }
+    
+    void AddToWait_T(Patient* p) {
+        if (p->getState() == Patient::Late) {
+            int penalty = (p->getVT() - p->getPT()) / 2;
+            lists.X_T_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+            p->setState(Patient::Wait);
+            return;
+        }
+        p->setState(Patient::Wait);
+        lists.X_T_WaitingList.enqueue(p);
+    }
+    
+    void AddToWait_S(Patient* p) {
+        if (p->getState() == Patient::Late) {
+            int penalty = (p->getVT() - p->getPT()) / 2;
+            lists.X_S_WaitingList.InsertSorted(p, -(p->getPT() + penalty));
+            p->setState(Patient::Wait);
+            return;
+        }
+        p->setState(Patient::Wait);
+        lists.X_S_WaitingList.enqueue(p);
+    }
 
       void Assign_E(LinkedQueue<Patient*>& TargetList) {
         
@@ -572,17 +696,19 @@ class Scheduler
       }
 
       void Assign_X() {
-          while (!lists.X_WaitingList.isEmpty()) {
+        // Dumbbells
+          while (!lists.X_D_WaitingList.isEmpty()) {
               Patient* patient;
-              lists.X_WaitingList.peek(patient);
-                  
+              lists.X_D_WaitingList.peek(patient);
               Treatment* xTreatment;
               patient->getCurrentTreatment(xTreatment);
-
+              if (patient->getID() == 9) {
+                  int x = 1 + 1;
+              }
                if (!xTreatment->canAssign(lists))
                    return;
 
-              lists.X_WaitingList.dequeue(patient);
+              lists.X_D_WaitingList.dequeue(patient);
 
               XResource*  resource;
               lists.X_Rooms.peek(resource);
@@ -594,11 +720,89 @@ class Scheduler
               }
 
               xTreatment->setAssResource(resource);
+              GymTool * tool;
+              if (!resource->dequeueTool('D', tool))
+              {
+                throw std::runtime_error("This shouldn't happen.");
+              }
+              
+              
+              ((X_Therapy*)xTreatment)->assignTool(tool);
               xTreatment->setST(timeStep);
 
               lists.inTreatmentList.enqueue(patient, -(timeStep + xTreatment->GetDuration()));
               patient->setState(Patient::Serv);
           }
+        // TreadMills
+        while (!lists.X_T_WaitingList.isEmpty()) {
+            Patient* patient;
+            lists.X_T_WaitingList.peek(patient);
+            Treatment* xTreatment;
+            patient->getCurrentTreatment(xTreatment);
+
+             if (!xTreatment->canAssign(lists))
+                 return;
+
+            lists.X_T_WaitingList.dequeue(patient);
+
+            XResource*  resource;
+            lists.X_Rooms.peek(resource);
+
+            resource->InCount();
+
+            if (resource->getCount() == resource->getCapacity()) {
+                lists.X_Rooms.dequeue(resource);
+            }
+
+            xTreatment->setAssResource(resource);
+            GymTool * tool;
+            if (!resource->dequeueTool('T', tool))
+            {
+              throw std::runtime_error("This shouldn't happen.");
+            }
+            
+            
+            ((X_Therapy*)xTreatment)->assignTool(tool);
+            xTreatment->setST(timeStep);
+
+            lists.inTreatmentList.enqueue(patient, -(timeStep + xTreatment->GetDuration()));
+            patient->setState(Patient::Serv);
+        }
+        // Smith Machines
+        while (!lists.X_S_WaitingList.isEmpty()) {
+            Patient* patient;
+            lists.X_S_WaitingList.peek(patient);
+            Treatment* xTreatment;
+            patient->getCurrentTreatment(xTreatment);
+
+             if (!xTreatment->canAssign(lists))
+                 return;
+
+            lists.X_S_WaitingList.dequeue(patient);
+
+            XResource*  resource;
+            lists.X_Rooms.peek(resource);
+
+            resource->InCount();
+
+            if (resource->getCount() == resource->getCapacity()) {
+                lists.X_Rooms.dequeue(resource);
+            }
+
+            xTreatment->setAssResource(resource);
+            GymTool * tool;
+            if (!resource->dequeueTool('S', tool))
+            {
+              throw std::runtime_error("This shouldn't happen.");
+            }
+            
+            
+            ((X_Therapy*)xTreatment)->assignTool(tool);
+            xTreatment->setST(timeStep);
+
+            lists.inTreatmentList.enqueue(patient, -(timeStep + xTreatment->GetDuration()));
+            patient->setState(Patient::Serv);
+        }
       }
 
       void HandleFailedList() {
@@ -635,8 +839,21 @@ class Scheduler
                   TL = lists.U_WaitingList.calculateTL();
                   break;
               case 'X':
-                  TL = lists.X_WaitingList.calculateTL();
-                  break;
+                    ToolTreatment * tool;
+                    ((X_Therapy*)t)->getCurrReqTool(tool);
+                    switch (tool->getType())
+                    {
+                        case 'S':
+                            TL = lists.X_S_WaitingList.calculateTL();
+                            break;
+                        case 'D':
+                            TL = lists.X_D_WaitingList.calculateTL();
+                            break;
+                        case 'T':
+                            TL = lists.X_T_WaitingList.calculateTL();
+                            break;
+                    }
+                    break;
               default:
                   TL = 0;
                   break;

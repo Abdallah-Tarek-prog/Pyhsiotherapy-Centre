@@ -35,6 +35,6 @@ int UEResource::getMainTime()const
 }
 
 std::ostream& operator<<(std::ostream& out, const UEResource& r) {
-    out << r.ID;
+    out << r.Type << r.ID;
     return out;
 }

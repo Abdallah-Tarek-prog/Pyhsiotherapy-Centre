@@ -45,6 +45,12 @@
     <ClCompile Include="UIClass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InTreatmentList.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GymTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Patient.h">
@@ -107,9 +113,13 @@
     <ClInclude Include="priNode.h">
       <Filter>Header Files\DS</Filter>
     </ClInclude>
+    <ClInclude Include="GymTool.h">
+      <Filter>Header Files\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
     <Text Include="Out.txt" />
+    <Text Include="input_X.txt" />
   </ItemGroup>
 </Project>

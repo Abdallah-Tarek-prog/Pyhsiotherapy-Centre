@@ -32,8 +32,16 @@ void UIClass::printLists(Lists& list, int timestep) const {
     list.U_WaitingList.print();
     std::cout << '\n';
 
-    std::cout << list.X_WaitingList.getCount() << " X-therapy patients: ";
-    list.X_WaitingList.print();
+    std::cout << list.X_D_WaitingList.getCount() << " X-therapy Dumbbell patients: ";
+    list.X_D_WaitingList.print();
+    std::cout << '\n';
+
+    std::cout << list.X_T_WaitingList.getCount() << " X-therapy TreadMill patients: ";
+    list.X_T_WaitingList.print();
+    std::cout << '\n';
+
+    std::cout << list.X_S_WaitingList.getCount() << " X-therapy Smith Machine patients: ";
+    list.X_S_WaitingList.print();
     std::cout << '\n';
 
     std::cout << "================ Early list ================\n";

@@ -1,5 +1,6 @@
 #include "Patient.h"
 #include <cctype> // For toupper
+#include "X_Therapy.h"
 
 int Patient::IDGenerator = 0;
 
@@ -135,6 +136,13 @@ std::ostream& operator<<(std::ostream& out, Patient& p) {
 
         out << 'P' << p.ID << '_';
         out << resource->getType() << resource->getID();
+        if (resource->getType() == 'R')
+        {
+            GymTool* assignedTool;
+            ((X_Therapy*)p.CurrTreatment)->getAssignedTool(assignedTool);
+            out << '_' << assignedTool->getType() << assignedTool->getID();
+        }
+        
 
         return out;
     }

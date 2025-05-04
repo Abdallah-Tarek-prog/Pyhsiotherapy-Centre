@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="E_Therapy.cpp" />
+    <ClCompile Include="GymTool.cpp" />
     <ClCompile Include="InTreatmentList.h" />
     <ClCompile Include="Patient.cpp" />
     <ClCompile Include="PyhsiotherapyCentre.cpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="ArrayStack.h" />
     <ClInclude Include="E_Therapy.h" />
+    <ClInclude Include="GymTool.h" />
     <ClInclude Include="LinkedQueue.h" />
     <ClInclude Include="Lists.h" />
     <ClInclude Include="M1Queue.h" />
@@ -160,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
+    <Text Include="input_X.txt" />
     <Text Include="Out.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
