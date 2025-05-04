@@ -316,24 +316,22 @@ class Scheduler
                         t->setAssResource(NULL); // For Saftey measures when Debugging
                          
                         // OPTIONAL: If a patient still has a req tool which is available in the room the patient is in, then leave the patient inside the room.
-                        ToolTreatment* nextToolTreatment = nullptr;
-                        if (((X_Therapy*)t)->getCurrReqTool(nextToolTreatment))
-                        {
-                        if(xRes->isToolAvailable(nextToolTreatment->getType())){
-                            t->setAssResource(xRes);
-                            GymTool * tool;
-                            if (!xRes->dequeueTool(nextToolTreatment->getType(), tool))
-                            {
-                                throw std::runtime_error("This shouldn't happen.");
-                            }
-                            
-                            
-                            ((X_Therapy*)t)->assignTool(tool);
-                            t->setST(timeStep);
-                            break;
-                        }
+                        // ToolTreatment* nextToolTreatment = nullptr;
+                        // if (((X_Therapy*)t)->getCurrReqTool(nextToolTreatment))
+                        // {
+                        // if(xRes->isToolAvailable(nextToolTreatment->getType())){
+                        //     t->setAssResource(xRes);
+                        //     GymTool * tool;
+                        //     if (!xRes->dequeueTool(nextToolTreatment->getType(), tool))
+                        //     {
+                        //         throw std::runtime_error("This shouldn't happen.");
+                        //     }
+                        //     ((X_Therapy*)t)->assignTool(tool);
+                        //     t->setST(timeStep);
+                        //     break;
+                        // }
                         
-                        }
+                        // }
 
 
                         if (xRes->getCount() == xRes->getCapacity()) // if the room was removed add it to the available list
@@ -342,8 +340,8 @@ class Scheduler
                         }
                         xRes->DeCount();  // Decrement its count
 
-                        
-                        ToolTreatment* reqTool;
+                        ToolTreatment* nextToolTreatment = nullptr;
+                        ((X_Therapy*)t)->getCurrReqTool(nextToolTreatment);
                         if(nextToolTreatment) break;
                         p->RemoveTreatment();
                         if (p->getPType() == 'R') HandleRP(p);
@@ -397,7 +395,7 @@ class Scheduler
         }
         void CancSimulation()
         {   
-            // TODO Change this implementation if needed.
+            // TODO Change this implementation
             M2Queue* chosenList;
             int randXWaitingList = rand() % 3; // 0-2
             switch (randXWaitingList)
@@ -638,8 +636,7 @@ class Scheduler
 
       void Assign_U(LinkedQueue<Patient*>& TargetList) {
 
-          
-     
+        
           UEResource* temp; int value;
           while (lists.U_Maintenance.peek(temp, value))
           {
@@ -702,11 +699,9 @@ class Scheduler
               lists.X_D_WaitingList.peek(patient);
               Treatment* xTreatment;
               patient->getCurrentTreatment(xTreatment);
-              if (patient->getID() == 9) {
-                  int x = 1 + 1;
-              }
+              
                if (!xTreatment->canAssign(lists))
-                   return;
+                   break;
 
               lists.X_D_WaitingList.dequeue(patient);
 
@@ -741,7 +736,7 @@ class Scheduler
             patient->getCurrentTreatment(xTreatment);
 
              if (!xTreatment->canAssign(lists))
-                 return;
+                 break;
 
             lists.X_T_WaitingList.dequeue(patient);
 
@@ -776,7 +771,7 @@ class Scheduler
             patient->getCurrentTreatment(xTreatment);
 
              if (!xTreatment->canAssign(lists))
-                 return;
+                 break;
 
             lists.X_S_WaitingList.dequeue(patient);
 
