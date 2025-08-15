@@ -29,12 +29,12 @@ This project simulates the scheduling and management of patients and resources i
 
 ## Data Structures Used
 
-| Data Structure         | File(s)                                   | Usage                                                                 |
-|-----------------------|-------------------------------------------|-----------------------------------------------------------------------|
-| Linked Queue          | [`LinkedQueue`](PyhsiotherapyCentre/LinkedQueue.h) | For general patient and resource queues (FIFO order)                  |
-| Array Stack           | [`ArrayStack`](PyhsiotherapyCentre/ArrayStack.h)   | For finished patients (LIFO order, easy pop for output)               |
-| Priority Queue        | [`priQueue`](PyhsiotherapyCentre/priQueue.h)       | For late patients and in-treatment lists (sorted by priority/time)    |
-| Custom Queues         | [`M1Queue`](PyhsiotherapyCentre/M1Queue.h), [`M2Queue`](PyhsiotherapyCentre/M2Queue.h), [`MpriQueue1`](PyhsiotherapyCentre/MpriQueue1.h) | For specialized patient management (early, late, X-therapy, etc.)     |
+| Data Structure | File(s)                                                                                                                                  | Usage                                                              |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Linked Queue   | [`LinkedQueue`](PyhsiotherapyCentre/LinkedQueue.h)                                                                                       | For general patient and resource queues (FIFO order)               |
+| Array Stack    | [`ArrayStack`](PyhsiotherapyCentre/ArrayStack.h)                                                                                         | For finished patients (LIFO order, easy pop for output)            |
+| Priority Queue | [`priQueue`](PyhsiotherapyCentre/priQueue.h)                                                                                             | For late patients and in-treatment lists (sorted by priority/time) |
+| Custom Queues  | [`M1Queue`](PyhsiotherapyCentre/M1Queue.h), [`M2Queue`](PyhsiotherapyCentre/M2Queue.h), [`MpriQueue1`](PyhsiotherapyCentre/MpriQueue1.h) | For specialized patient management (early, late, X-therapy, etc.)  |
 
 ---
 
@@ -65,13 +65,42 @@ These choices ensure that the simulation is both efficient and flexible, allowin
 
 ---
 
+## Input/Output Format
+
+- **Input:** See sample files like [`input1.txt`](input1.txt), [`StressTestInput.txt`](StressTestInput.txt).
+
+### Input Example
+
+![Input Example](PyhsiotherapyCentre/assets/Input%20File.png)
+
+- **Output:** Results are written to a file specified at the end of the simulation, e.g., [`outstress.txt`](PyhsiotherapyCentre/outstress.txt).
+
+### Output Example
+
+![Output Example](PyhsiotherapyCentre/assets/Output%20File.png)
+
+### Timestep Example
+
+![Timestep Example](PyhsiotherapyCentre/assets/Time%20Step.png)
+
+---
+
 ## UML Class Diagram
 
-> **Place your UML class diagram here.**
+> **UML Class Diagram**
 >
-> ![UML Class Diagram](docs/uml-diagram.png)
+> Available in two formats:
 >
-> _You can generate a UML diagram using tools like StarUML, PlantUML, or Visual Paradigm and save it in the `docs/` folder._
+> - [PDF Version](PyhsiotherapyCentre/assets/UML.pdf)
+> - [SVG Version](PyhsiotherapyCentre/assets/UML.svg)
+
+---
+
+## Screenshots
+
+> **Add screenshots of your application in action here.**
+>
+> ![Simulation Screenshot](PyhsiotherapyCentre/assets/Simulation.png)
 
 ---
 
@@ -85,10 +114,9 @@ These choices ensure that the simulation is both efficient and flexible, allowin
 
 ## Contributors
 
-- [Your Name]
-- [Other Contributors]
-
----
+-
+-
+- ***
 
 ## License
 

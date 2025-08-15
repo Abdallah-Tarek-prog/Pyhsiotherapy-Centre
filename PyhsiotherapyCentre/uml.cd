@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Patient">
+    <Position X="15.5" Y="2.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Patient::pState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Patient.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QIGEQHAEUCAAgICAAACAAAQAAAADAUAHoAAAAgAASC8=</HashCode>
+      <FileName>Patient.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scheduler">
+    <Position X="9.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAEACECAYBAAAACAQABA0AAgggAQAICEAAMgAA=</HashCode>
+      <FileName>Scheduler.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIClass">
+    <Position X="11.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAEAAAAAAgAAgAABAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UIClass.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ArrayStack&lt;T&gt;">
+    <Position X="0.75" Y="5.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="ArrayStack&lt;T&gt;::__unnamed_enum_0401_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ArrayStack.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQAAAQAAAAAAAAABAgAAIgAAAAAAAAAAAAIACAEQAA=</HashCode>
+      <FileName>ArrayStack.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LinkedQueue&lt;T&gt;">
+    <Position X="3.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAQAACAAAAAABAAEAAAEAAAAAAAAAAAEQAAEQAA=</HashCode>
+      <FileName>LinkedQueue.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="M1Queue">
+    <Position X="3.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAQAACAAAAAAAAAAAAAECAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>M1Queue.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="M2Queue">
+    <Position X="6.25" Y="10.75" Width="1.5" />
+    <InheritanceLine Type="M1Queue" FixedFromPoint="true">
+      <Path>
+        <Point X="4.75" Y="11.5" />
+        <Point X="6.25" Y="11.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>M2Queue.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MpriQueue1">
+    <Position X="5.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MpriQueue1.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Node&lt;T&gt;">
+    <Position X="0.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEQAAAAAAAAAQAAAAAAAAAAAAAIAACAAMAAAA=</HashCode>
+      <FileName>Node.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="priNode&lt;T&gt;">
+    <Position X="0.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEQAAAAAAAAAQAAAAQAAAAAQAAIAACAAIAAAA=</HashCode>
+      <FileName>priNode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="priQueue&lt;T&gt;">
+    <Position X="5.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAQAgAAAAAAABBAAAAAUAAAAAAAAAAAAAAAEQAA=</HashCode>
+      <FileName>priQueue.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QueueADT&lt;ItemType&gt;">
+    <Position X="3.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>QueueADT.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UEResource">
+    <Position X="7.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgACAAAAAAAAAAQABAAAAAQAAAAAAQAA=</HashCode>
+      <FileName>UEResource.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="XResource">
+    <Position X="7.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAIAAAAJAIAAAAAAAAAAAAACAAAAAAEAAA=</HashCode>
+      <FileName>XResource.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="E_Therapy">
+    <Position X="8.75" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASAEA=</HashCode>
+      <FileName>E_Therapy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Treatment">
+    <Position X="11.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAIiAAAAAAAAgADAAAAAAAAAAAEAAQAgAAACIEA=</HashCode>
+      <FileName>Treatment.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="U_Therapy">
+    <Position X="11.25" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAACAEA=</HashCode>
+      <FileName>U_Therapy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="X_Therapy">
+    <Position X="13.5" Y="11" Width="1.5" />
+    <InheritanceLine Type="Treatment" FixedFromPoint="true">
+      <Path>
+        <Point X="12" Y="10.42" />
+        <Point X="12" Y="10.7" />
+        <Point X="14.25" Y="10.7" />
+        <Point X="14.25" Y="11" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICAEA=</HashCode>
+      <FileName>X_Therapy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Lists">
+    <Position X="9.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAkAAAAQAACAAAAAAgAAAAAAAAAkAAQAAAAAAAACAA=</HashCode>
+      <FileName>Lists.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="statistics">
+    <Position X="13.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACCAAAAAAABAAABCIgAAAAAAAAABAAAAAAAAAgIAgA=</HashCode>
+      <FileName>statistics.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
