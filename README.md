@@ -86,8 +86,9 @@ These choices ensure that the simulation is both efficient and flexible, allowin
 ---
 
 ## UML Class Diagram
+
 ![UML Diagram](PyhsiotherapyCentre/assets/UML.svg)
-> 
+
 > Available in two formats:
 >
 > - [PDF Version](PyhsiotherapyCentre/assets/UML.pdf)
@@ -97,15 +98,13 @@ These choices ensure that the simulation is both efficient and flexible, allowin
 
 ## Screenshots
 
-> **Add screenshots of your application in action here.**
->
 > ![Simulation Screenshot](PyhsiotherapyCentre/assets/Simulation.png)
 
 ---
 
 ## Contributors
 
--Abdelrahaman Elbana    -Abdallah Tarek    -Abdulrahman Jalal
+-Abdelrahaman Elbana -Abdallah Tarek -Abdulrahman Jalal
 
 ---
 
